@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 dotenv.config();
 
@@ -12,6 +14,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Swagger setup
+const swaggerSpec = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Sportif TN API',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: process.env.API_BASE_URL || 'http://localhost:5000',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  apis: [path.join(__dirname, 'routes', '*.js')],
+});
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -28,4 +58,11 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sportif-tn'
   .catch(err => console.error('❌ MongoDB Error:', err));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+// Export app for serverless platforms (e.g., Vercel)
+module.exports = app;
+
+// Only listen when running locally or in a traditional server environment
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
