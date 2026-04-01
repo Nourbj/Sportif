@@ -15,6 +15,14 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Root message
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Sportif TN backend is running',
+    docs: '/api-docs',
+  });
+});
+
 // Swagger setup
 const swaggerSpec = swaggerJsdoc({
   definition: {
