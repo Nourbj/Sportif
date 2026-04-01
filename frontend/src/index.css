@@ -1,0 +1,89 @@
+:root {
+  --red: #CC0000;
+  --red-dark: #990000;
+  --red-light: #FF1A1A;
+  --white: #FFFFFF;
+  --black: #0A0A0A;
+  --gray-100: #F5F5F5;
+  --gray-200: #E8E8E8;
+  --gray-400: #999999;
+  --gray-600: #555555;
+  --shadow: 0 4px 20px rgba(204,0,0,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  direction: rtl;
+}
+
+a { text-decoration: none; color: inherit; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+.btn-red {
+  background: var(--red);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-red:hover { background: var(--red-dark); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--red);
+  border: 2px solid var(--red);
+  padding: 8px 22px;
+  border-radius: 4px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--red); color: white; }
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--black);
+  border-right: 5px solid var(--red);
+  padding-right: 15px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.badge-red { background: var(--red); color: white; }
+.badge-live { background: #00aa44; color: white; animation: pulse 1.5s infinite; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+@media(max-width:768px){
+  .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; }
+}

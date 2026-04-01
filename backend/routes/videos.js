@@ -1,0 +1,47 @@
+const express = require('express');
+const router = express.Router();
+const Video = require('../models/Video');
+const { protect, adminOnly } = require('../middleware/auth');
+
+router.get('/', async (req, res) => {
+  try {
+    const { page = 1, limit = 12, category } = req.query;
+    const query = {};
+    if (category) query.category = category;
+    const videos = await Video.find(query).populate('author', 'name').sort('-createdAt')
+      .limit(limit * 1).skip((page - 1) * limit);
+    const total = await Video.countDocuments(query);
+    res.json({ videos, total, pages: Math.ceil(total / limit) });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const video = await Video.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true }).populate('author', 'name');
+    if (!video) return res.status(404).json({ message: 'Not found' });
+    res.json(video);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.post('/', protect, adminOnly, async (req, res) => {
+  try {
+    const video = await Video.create({ ...req.body, author: req.user._id });
+    res.status(201).json(video);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.put('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const video = await Video.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(video);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.delete('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    await Video.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Deleted' });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+module.exports = router;
