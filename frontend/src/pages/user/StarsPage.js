@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './StarsPage.css';
 
 const StarsPage = () => {
   const [stars, setStars] = useState([]);
@@ -17,27 +18,27 @@ const StarsPage = () => {
   }, [sport]);
 
   return (
-    <div className="container" style={{ padding: '40px 20px' }}>
+    <div className="container stars-page">
       <h1 className="section-title">نجوم الرياضة</h1>
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
+      <div className="stars-filters">
         {sports.map(s => (
           <button key={s.val} onClick={() => setSport(s.val)}
-            style={{ padding: '8px 20px', borderRadius: '20px', border: `2px solid ${sport === s.val ? '#CC0000' : '#ddd'}`, background: sport === s.val ? '#CC0000' : 'white', color: sport === s.val ? 'white' : '#555', fontFamily: 'Cairo', fontWeight: 700, cursor: 'pointer' }}>
+            className={`stars-filter-btn${sport === s.val ? ' is-active' : ''}`}>
             {s.label}
           </button>
         ))}
       </div>
-      {loading ? <div style={{ textAlign: 'center', padding: '60px', color: '#CC0000', fontSize: '1.5rem' }}>⏳ جار التحميل...</div> : (
+      {loading ? <div className="stars-loading">⏳ جار التحميل...</div> : (
         <div className="grid-4">
           {stars.map(s => (
-            <Link key={s._id} to={`/stars/${s._id}`} style={{ textDecoration: 'none' }}>
-              <div className="card" style={{ textAlign: 'center', padding: '30px 20px' }}>
-                {s.featured && <div style={{ position: 'relative' }}><span style={{ position: 'absolute', top: '-20px', right: '-10px', background: '#FFD700', color: '#333', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: '10px' }}>⭐ نجم</span></div>}
-                <img src={s.image || `https://picsum.photos/seed/${s._id}/200/200`} alt="" style={{ width: '110px', height: '110px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #CC0000', marginBottom: '16px' }} />
-                <h3 style={{ fontWeight: 900, fontSize: '1.1rem', marginBottom: '6px' }}>{s.nameAr}</h3>
-                <p style={{ color: '#CC0000', fontWeight: 700, fontSize: '0.9rem', marginBottom: '4px' }}>{s.sport}</p>
-                <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '4px' }}>{s.nationalityAr || s.nationality}</p>
-                {s.clubAr && <p style={{ color: '#555', fontSize: '0.82rem' }}>{s.clubAr}</p>}
+            <Link key={s._id} to={`/stars/${s._id}`} className="stars-card-link">
+              <div className="card stars-card">
+                {s.featured && <div className="stars-featured"><span className="stars-featured-badge">⭐ نجم</span></div>}
+                <img src={s.image || `https://picsum.photos/seed/${s._id}/200/200`} alt="" className="stars-avatar" />
+                <h3 className="stars-name">{s.nameAr}</h3>
+                <p className="stars-sport">{s.sport}</p>
+                <p className="stars-nationality">{s.nationalityAr || s.nationality}</p>
+                {s.clubAr && <p className="stars-club">{s.clubAr}</p>}
               </div>
             </Link>
           ))}

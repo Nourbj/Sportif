@@ -1,0 +1,128 @@
+.videos-page {
+  padding: 40px 20px;
+}
+
+.videos-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.videos-filter-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #555;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.videos-filter-btn.is-active {
+  border-color: #CC0000;
+  background: #CC0000;
+  color: white;
+}
+
+.videos-loading {
+  text-align: center;
+  padding: 60px;
+  color: #CC0000;
+  font-size: 1.5rem;
+}
+
+.videos-grid {
+  margin-bottom: 40px;
+}
+
+.videos-card-link {
+  text-decoration: none;
+}
+
+.videos-thumb {
+  position: relative;
+}
+
+.videos-thumb-img {
+  width: 100%;
+  height: 195px;
+  object-fit: cover;
+}
+
+.videos-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  transition: background 0.2s;
+}
+
+.videos-play {
+  width: 52px;
+  height: 52px;
+  background: #CC0000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: white;
+  box-shadow: 0 4px 15px rgba(204, 0, 0, 0.5);
+}
+
+.videos-category {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.videos-card-body {
+  padding: 14px;
+}
+
+.videos-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.videos-card-views {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.videos-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.videos-page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #555;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.videos-page-btn.is-active {
+  border-color: #CC0000;
+  background: #CC0000;
+  color: white;
+}

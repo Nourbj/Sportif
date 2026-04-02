@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './ArticlesPage.css';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -21,41 +22,41 @@ const ArticlesPage = () => {
   }, [page, type]);
 
   return (
-    <div className="container" style={{ padding: '40px 20px' }}>
+    <div className="container articles-page">
       <h1 className="section-title">مقالات و تحليلات</h1>
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
+      <div className="articles-filters">
         {types.map(t => (
           <button key={t.val} onClick={() => { setType(t.val); setPage(1); }}
-            style={{ padding: '8px 20px', borderRadius: '20px', border: `2px solid ${type === t.val ? '#CC0000' : '#ddd'}`, background: type === t.val ? '#CC0000' : 'white', color: type === t.val ? 'white' : '#555', fontFamily: 'Cairo', fontWeight: 700, cursor: 'pointer' }}>
+            className={`articles-filter-btn${type === t.val ? ' is-active' : ''}`}>
             {t.label}
           </button>
         ))}
       </div>
-      {loading ? <div style={{ textAlign: 'center', padding: '60px', color: '#CC0000', fontSize: '1.5rem' }}>⏳ جار التحميل...</div> : (
+      {loading ? <div className="articles-loading">⏳ جار التحميل...</div> : (
         <>
-          <div className="grid-3" style={{ marginBottom: '40px' }}>
+          <div className="grid-3 articles-grid">
             {articles.map(a => (
-              <Link key={a._id} to={`/articles/${a._id}`} style={{ textDecoration: 'none' }}>
+              <Link key={a._id} to={`/articles/${a._id}`} className="articles-card-link">
                 <div className="card">
-                  <img src={a.image || `https://picsum.photos/seed/${a._id}/400/220`} alt="" style={{ width: '100%', height: '195px', objectFit: 'cover' }} />
-                  <div style={{ padding: '18px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <span className="badge" style={{ background: a.type === 'analysis' ? '#1a73e8' : a.type === 'opinion' ? '#e8a01a' : '#1aae6f', color: 'white', fontSize: '0.72rem' }}>
+                  <img src={a.image || `https://picsum.photos/seed/${a._id}/400/220`} alt="" className="articles-card-img" />
+                  <div className="articles-card-body">
+                    <div className="articles-card-meta">
+                      <span className={`badge articles-card-badge articles-card-badge-${a.type}`}>
                         {a.type === 'analysis' ? 'تحليل' : a.type === 'opinion' ? 'رأي' : 'تقرير'}
                       </span>
-                      <span style={{ fontSize: '0.78rem', color: '#999' }}>{formatDate(a.createdAt)}</span>
+                      <span className="articles-card-date">{formatDate(a.createdAt)}</span>
                     </div>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 700, lineHeight: 1.5, color: '#111', marginBottom: '8px' }}>{a.titleAr}</h3>
-                    <p style={{ fontSize: '0.82rem', color: '#888' }}>✍ {a.author?.name} • 👁 {a.views}</p>
+                    <h3 className="articles-card-title">{a.titleAr}</h3>
+                    <p className="articles-card-sub">✍ {a.author?.name} • 👁 {a.views}</p>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <div className="articles-pagination">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
               <button key={p} onClick={() => setPage(p)}
-                style={{ width: '40px', height: '40px', borderRadius: '4px', border: `2px solid ${page === p ? '#CC0000' : '#ddd'}`, background: page === p ? '#CC0000' : 'white', color: page === p ? 'white' : '#555', fontFamily: 'Cairo', fontWeight: 700, cursor: 'pointer' }}>
+                className={`articles-page-btn${page === p ? ' is-active' : ''}`}>
                 {p}
               </button>
             ))}

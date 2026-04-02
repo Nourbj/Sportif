@@ -1,0 +1,146 @@
+.matches-page {
+  padding: 40px 20px;
+}
+
+.matches-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.matches-filter-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #555;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.matches-filter-btn.is-active {
+  border-color: #CC0000;
+  background: #CC0000;
+  color: white;
+}
+
+.matches-loading {
+  text-align: center;
+  padding: 60px;
+  color: #CC0000;
+  font-size: 1.5rem;
+}
+
+.matches-empty {
+  text-align: center;
+  padding: 60px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  color: #888;
+}
+
+.matches-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.matches-empty-text {
+  font-size: 1.1rem;
+}
+
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.matches-card {
+  padding: 24px;
+}
+
+.matches-card-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.matches-competition {
+  font-size: 0.85rem;
+  color: #CC0000;
+  font-weight: 700;
+  background: #fff5f5;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.matches-status-finished {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.matches-status-upcoming {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.matches-venue {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-right: auto;
+}
+
+.matches-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.matches-team {
+  text-align: center;
+  flex: 1;
+}
+
+.matches-team-logo {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.matches-team-name {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: #111;
+}
+
+.matches-score {
+  text-align: center;
+  padding: 0 30px;
+}
+
+.matches-score-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #CC0000;
+  line-height: 1;
+}
+
+.matches-vs {
+  font-size: 1.3rem;
+  color: #bbb;
+  font-weight: 700;
+}
+
+.matches-time {
+  font-size: 0.9rem;
+  color: #CC0000;
+  font-weight: 700;
+  margin-top: 6px;
+}

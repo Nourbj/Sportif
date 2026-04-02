@@ -1,0 +1,129 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f5f7;
+}
+
+.admin-sidebar {
+  width: 240px;
+  background: #0A0A0A;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.admin-sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid #222;
+}
+
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.admin-sidebar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-sidebar-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #CC0000;
+}
+
+.admin-sidebar-subtitle {
+  color: #555;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+.admin-sidebar-nav {
+  padding: 16px 0;
+}
+
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #888;
+  background: transparent;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin: 2px 0;
+}
+
+.admin-sidebar-link.is-active {
+  color: white;
+  background: #CC0000;
+  font-weight: 700;
+}
+
+.admin-sidebar-icon {
+  font-size: 1.1rem;
+}
+
+.admin-sidebar-label {
+  font-size: 0.92rem;
+}
+
+.admin-sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #222;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.admin-sidebar-back {
+  color: #888;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.admin-main {
+  margin-right: 240px;
+  flex: 1;
+  padding: 32px;
+  min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar {
+    width: 200px;
+  }
+
+  .admin-main {
+    margin-right: 200px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .admin-sidebar-footer {
+    position: static;
+  }
+
+  .admin-main {
+    margin-right: 0;
+    padding: 20px;
+  }
+}

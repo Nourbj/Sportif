@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './AdminUsers.css';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -15,42 +16,44 @@ const AdminUsers = () => {
   const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN');
 
   return (
-    <div>
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 900 }}>إدارة المستخدمين</h1>
-        <p style={{ color: '#888', marginTop: '6px' }}>إجمالي: {users.length} مستخدم</p>
+    <div className="admin-users">
+      <div className="admin-users-header">
+        <h1 className="admin-users-title">إدارة المستخدمين</h1>
+        <p className="admin-users-subtitle">إجمالي: {users.length} مستخدم</p>
       </div>
-      <div style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead><tr style={{ background: '#f9f9f9', borderBottom: '2px solid #eee' }}>
+      <div className="admin-users-table-card">
+        <table className="admin-users-table">
+          <thead>
+            <tr className="admin-users-table-head">
             {['الاسم', 'البريد الإلكتروني', 'الدور', 'تاريخ التسجيل', 'الإجراءات'].map(h => (
-              <th key={h} style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 800, color: '#555', fontSize: '0.9rem' }}>{h}</th>
+              <th key={h} className="admin-users-th">{h}</th>
             ))}
-          </tr></thead>
+            </tr>
+          </thead>
           <tbody>
             {users.map(u => (
-              <tr key={u._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '36px', height: '36px', background: u.role === 'admin' ? '#CC0000' : '#ddd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: u.role === 'admin' ? 'white' : '#555', fontWeight: 700, fontSize: '0.9rem' }}>
+              <tr key={u._id} className="admin-users-tr">
+                <td className="admin-users-td">
+                  <div className="admin-users-user">
+                    <div className={`admin-users-avatar${u.role === 'admin' ? ' is-admin' : ''}`}>
                       {u.name.charAt(0)}
                     </div>
-                    <span style={{ fontWeight: 700 }}>{u.name}</span>
+                    <span className="admin-users-name">{u.name}</span>
                   </div>
                 </td>
-                <td style={{ padding: '14px 16px', color: '#666' }}>{u.email}</td>
-                <td style={{ padding: '14px 16px' }}>
-                  <span className="badge" style={{ background: u.role === 'admin' ? '#CC0000' : '#555', color: 'white', fontSize: '0.78rem' }}>
+                <td className="admin-users-td admin-users-muted">{u.email}</td>
+                <td className="admin-users-td">
+                  <span className="badge admin-users-badge" style={{ background: u.role === 'admin' ? '#CC0000' : '#555' }}>
                     {u.role === 'admin' ? 'مدير' : 'مستخدم'}
                   </span>
                 </td>
-                <td style={{ padding: '14px 16px', color: '#888', fontSize: '0.85rem' }}>{formatDate(u.createdAt)}</td>
-                <td style={{ padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => toggleRole(u._id, u.role)} style={{ padding: '6px 14px', background: u.role === 'admin' ? '#555' : '#1a73e8', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: '0.78rem' }}>
+                <td className="admin-users-td admin-users-date">{formatDate(u.createdAt)}</td>
+                <td className="admin-users-td">
+                  <div className="admin-users-actions">
+                    <button onClick={() => toggleRole(u._id, u.role)} className={`admin-users-btn ${u.role === 'admin' ? 'admin-users-btn-neutral' : 'admin-users-btn-edit'}`}>
                       {u.role === 'admin' ? 'إزالة الصلاحية' : 'منح صلاحية'}
                     </button>
-                    <button onClick={() => handleDelete(u._id)} style={{ padding: '6px 14px', background: '#CC0000', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: '0.78rem' }}>حذف</button>
+                    <button onClick={() => handleDelete(u._id)} className="admin-users-btn admin-users-btn-delete">حذف</button>
                   </div>
                 </td>
               </tr>

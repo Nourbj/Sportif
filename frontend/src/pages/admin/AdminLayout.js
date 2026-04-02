@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import './AdminLayout.css';
 
 const AdminLayout = () => {
   const { user } = useAuth();
@@ -18,37 +19,36 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f4f5f7' }}>
+    <div className="admin-layout">
       {/* Sidebar */}
-      <aside style={{ width: '240px', background: '#0A0A0A', position: 'fixed', top: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 100 }}>
-        <div style={{ padding: '24px 20px', borderBottom: '1px solid #222' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <img src="/images/logo.jpg" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-            <span style={{ fontFamily: 'Oswald', fontSize: '1.1rem', fontWeight: 700, color: '#CC0000' }}>SPORTIF.TN</span>
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
+          <Link to="/" className="admin-sidebar-brand">
+            <img src="/images/logo.jpg" alt="Logo" className="admin-sidebar-logo" />
+            <span className="admin-sidebar-title">SPORTIF.TN</span>
           </Link>
-          <p style={{ color: '#555', fontSize: '0.8rem', marginTop: '8px' }}>لوحة الإدارة</p>
+          <p className="admin-sidebar-subtitle">لوحة الإدارة</p>
         </div>
-        <nav style={{ padding: '16px 0' }}>
+        <nav className="admin-sidebar-nav">
           {navItems.map(item => {
             const isActive = item.exact ? pathname === item.to : pathname.startsWith(item.to) && item.to !== '/admin';
             const exactActive = item.exact && pathname === '/admin';
             const active = isActive || exactActive;
             return (
-              <Link key={item.to} to={item.to}
-                style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px', color: active ? 'white' : '#888', background: active ? '#CC0000' : 'transparent', fontWeight: active ? 700 : 400, textDecoration: 'none', transition: 'all 0.2s', margin: '2px 0' }}>
-                <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
-                <span style={{ fontSize: '0.92rem' }}>{item.label}</span>
+              <Link key={item.to} to={item.to} className={`admin-sidebar-link${active ? ' is-active' : ''}`}>
+                <span className="admin-sidebar-icon">{item.icon}</span>
+                <span className="admin-sidebar-label">{item.label}</span>
               </Link>
             );
           })}
         </nav>
-        <div style={{ padding: '20px', borderTop: '1px solid #222', position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-          <Link to="/" style={{ color: '#888', fontSize: '0.85rem', textDecoration: 'none' }}>← العودة للموقع</Link>
+        <div className="admin-sidebar-footer">
+          <Link to="/" className="admin-sidebar-back">← العودة للموقع</Link>
         </div>
       </aside>
 
       {/* Main content */}
-      <main style={{ marginRight: '240px', flex: 1, padding: '32px', minHeight: '100vh' }}>
+      <main className="admin-main">
         <Outlet />
       </main>
     </div>

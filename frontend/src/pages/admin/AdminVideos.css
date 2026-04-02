@@ -1,0 +1,177 @@
+.admin-videos {
+  width: 100%;
+}
+
+.admin-videos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.admin-videos-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.admin-videos-form-card {
+  background: white;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.admin-videos-form-title {
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.admin-videos-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.admin-videos-span {
+  grid-column: span 2;
+}
+
+.admin-videos-label {
+  display: block;
+  font-weight: 700;
+  color: #333;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.admin-videos-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 6px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.admin-videos-textarea {
+  min-height: 80px;
+}
+
+.admin-videos-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.admin-videos-table-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-videos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-videos-table-head {
+  background: #f9f9f9;
+  border-bottom: 2px solid #eee;
+}
+
+.admin-videos-th {
+  padding: 14px 16px;
+  text-align: right;
+  font-weight: 800;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.admin-videos-tr {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-videos-td {
+  padding: 12px 16px;
+}
+
+.admin-videos-thumb {
+  width: 70px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.admin-videos-title-cell {
+  font-weight: 600;
+  max-width: 250px;
+}
+
+.admin-videos-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-videos-badge {
+  background: #ff6b00;
+  color: white;
+  font-size: 0.75rem;
+}
+
+.admin-videos-muted {
+  color: #666;
+}
+
+.admin-videos-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-videos-btn {
+  padding: 6px 14px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.admin-videos-btn-edit {
+  background: #1a73e8;
+}
+
+.admin-videos-btn-delete {
+  background: #CC0000;
+}
+
+@media (max-width: 900px) {
+  .admin-videos-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-videos-span {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-videos-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .admin-videos-table-card {
+    overflow-x: auto;
+  }
+
+  .admin-videos-table {
+    min-width: 720px;
+  }
+}

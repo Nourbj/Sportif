@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import './VideoDetail.css';
 
 const VideoDetail = () => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const VideoDetail = () => {
     });
   }, [id]);
 
-  if (!video) return <div style={{ textAlign: 'center', padding: '80px', color: '#CC0000', fontSize: '1.5rem' }}>⏳ جار التحميل...</div>;
+  if (!video) return <div className="video-detail-loading">⏳ جار التحميل...</div>;
 
   const getYTEmbed = (url) => {
     if (url.includes('youtube.com/embed/')) return url;
@@ -25,33 +26,32 @@ const VideoDetail = () => {
   };
 
   return (
-    <div className="container" style={{ padding: '40px 20px' }}>
-      <Link to="/videos" style={{ color: '#CC0000', fontWeight: 700, marginBottom: '20px', display: 'inline-block' }}>← العودة للفيديوهات</Link>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px' }}>
+    <div className="container video-detail">
+      <Link to="/videos" className="video-detail-back">← العودة للفيديوهات</Link>
+      <div className="video-detail-grid">
         <div>
-          <div style={{ borderRadius: '12px', overflow: 'hidden', marginBottom: '24px', background: '#000', aspectRatio: '16/9' }}>
-            <iframe src={getYTEmbed(video.url)} style={{ width: '100%', height: '100%' }} frameBorder="0" allowFullScreen title={video.titleAr} />
+          <div className="video-detail-player">
+            <iframe src={getYTEmbed(video.url)} className="video-detail-iframe" frameBorder="0" allowFullScreen title={video.titleAr} />
           </div>
-          <span className="badge badge-red" style={{ marginBottom: '10px', display: 'inline-block' }}>{video.category}</span>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px' }}>{video.titleAr}</h1>
-          <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '16px' }}>👁 {video.views} مشاهدة • ✍ {video.author?.name}</p>
-          {video.descriptionAr && <p style={{ lineHeight: 1.9, color: '#444' }}>{video.descriptionAr}</p>}
+          <span className="badge badge-red video-detail-badge">{video.category}</span>
+          <h1 className="video-detail-title">{video.titleAr}</h1>
+          <p className="video-detail-meta">👁 {video.views} مشاهدة • ✍ {video.author?.name}</p>
+          {video.descriptionAr && <p className="video-detail-desc">{video.descriptionAr}</p>}
         </div>
         <aside>
-          <h3 style={{ borderRight: '4px solid #CC0000', paddingRight: '12px', fontWeight: 800, marginBottom: '20px' }}>فيديوهات ذات صلة</h3>
+          <h3 className="video-detail-aside-title">فيديوهات ذات صلة</h3>
           {related.slice(0, 4).map(v => (
-            <Link key={v._id} to={`/videos/${v._id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', padding: '10px', borderRadius: '8px', border: '1px solid #eee' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = '#CC0000'} onMouseLeave={e => e.currentTarget.style.borderColor = '#eee'}>
-                <div style={{ position: 'relative', flexShrink: 0 }}>
-                  <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/160/90`} alt="" style={{ width: '90px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} />
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: '24px', height: '24px', background: '#CC0000', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', color: 'white' }}>▶</div>
+            <Link key={v._id} to={`/videos/${v._id}`} className="video-detail-related-link">
+              <div className="video-detail-related-card">
+                <div className="video-detail-related-thumb">
+                  <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/160/90`} alt="" className="video-detail-related-img" />
+                  <div className="video-detail-related-play">
+                    <div className="video-detail-related-play-icon">▶</div>
                   </div>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1.4, color: '#111' }}>{v.titleAr}</p>
-                  <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '4px' }}>👁 {v.views}</p>
+                  <p className="video-detail-related-title">{v.titleAr}</p>
+                  <p className="video-detail-related-views">👁 {v.views}</p>
                 </div>
               </div>
             </Link>

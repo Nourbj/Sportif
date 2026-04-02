@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './AdminMatches.css';
 
 const AdminMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -25,68 +26,94 @@ const AdminMatches = () => {
   };
   const handleDelete = async (id) => { if (window.confirm('حذف المباراة؟')) { await axios.delete(`/api/matches/${id}`); fetchMatches(); } };
 
-  const inputStyle = { width: '100%', padding: '10px 14px', border: '1.5px solid #e5e5e5', borderRadius: '6px', fontFamily: 'Cairo', fontSize: '0.9rem', outline: 'none' };
-  const labelStyle = { display: 'block', fontWeight: 700, color: '#333', fontSize: '0.9rem', marginBottom: '4px' };
   const formatDate = (d) => new Date(d).toLocaleString('ar-TN');
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 900 }}>إدارة المباريات</h1>
+    <div className="admin-matches">
+      <div className="admin-matches-header">
+        <h1 className="admin-matches-title">إدارة المباريات</h1>
         <button onClick={() => { resetForm(); setShowForm(true); }} className="btn-red">+ إضافة مباراة</button>
       </div>
       {showForm && (
-        <div style={{ background: 'white', padding: '28px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginBottom: '30px' }}>
-          <h3 style={{ marginBottom: '24px', fontWeight: 800 }}>{editing ? 'تعديل مباراة' : 'إضافة مباراة'}</h3>
+        <div className="admin-matches-form-card">
+          <h3 className="admin-matches-form-title">{editing ? 'تعديل مباراة' : 'إضافة مباراة'}</h3>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div><label style={labelStyle}>الفريق المضيف *</label><input style={inputStyle} value={form.homeTeam} onChange={e => setForm({...form, homeTeam: e.target.value})} required /></div>
-              <div><label style={labelStyle}>الفريق الضيف *</label><input style={inputStyle} value={form.awayTeam} onChange={e => setForm({...form, awayTeam: e.target.value})} required /></div>
-              <div><label style={labelStyle}>شعار المضيف (emoji)</label><input style={inputStyle} value={form.homeTeamLogo} onChange={e => setForm({...form, homeTeamLogo: e.target.value})} /></div>
-              <div><label style={labelStyle}>شعار الضيف (emoji)</label><input style={inputStyle} value={form.awayTeamLogo} onChange={e => setForm({...form, awayTeamLogo: e.target.value})} /></div>
-              <div><label style={labelStyle}>المسابقة *</label><input style={inputStyle} value={form.competition} onChange={e => setForm({...form, competition: e.target.value})} required /></div>
-              <div><label style={labelStyle}>التاريخ والوقت *</label><input type="datetime-local" style={inputStyle} value={form.date} onChange={e => setForm({...form, date: e.target.value})} required /></div>
-              <div><label style={labelStyle}>الحالة</label>
-                <select style={inputStyle} value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+            <div className="admin-matches-form-grid">
+              <div>
+                <label className="admin-matches-label">الفريق المضيف *</label>
+                <input className="admin-matches-input" value={form.homeTeam} onChange={e => setForm({...form, homeTeam: e.target.value})} required />
+              </div>
+              <div>
+                <label className="admin-matches-label">الفريق الضيف *</label>
+                <input className="admin-matches-input" value={form.awayTeam} onChange={e => setForm({...form, awayTeam: e.target.value})} required />
+              </div>
+              <div>
+                <label className="admin-matches-label">شعار المضيف (emoji)</label>
+                <input className="admin-matches-input" value={form.homeTeamLogo} onChange={e => setForm({...form, homeTeamLogo: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-matches-label">شعار الضيف (emoji)</label>
+                <input className="admin-matches-input" value={form.awayTeamLogo} onChange={e => setForm({...form, awayTeamLogo: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-matches-label">المسابقة *</label>
+                <input className="admin-matches-input" value={form.competition} onChange={e => setForm({...form, competition: e.target.value})} required />
+              </div>
+              <div>
+                <label className="admin-matches-label">التاريخ والوقت *</label>
+                <input type="datetime-local" className="admin-matches-input" value={form.date} onChange={e => setForm({...form, date: e.target.value})} required />
+              </div>
+              <div>
+                <label className="admin-matches-label">الحالة</label>
+                <select className="admin-matches-input" value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                   <option value="upcoming">قادمة</option><option value="live">مباشر</option><option value="finished">انتهت</option>
                 </select>
               </div>
-              <div><label style={labelStyle}>الملعب</label><input style={inputStyle} value={form.venue} onChange={e => setForm({...form, venue: e.target.value})} /></div>
-              <div><label style={labelStyle}>نتيجة المضيف</label><input type="number" min="0" style={inputStyle} value={form.homeScore} onChange={e => setForm({...form, homeScore: e.target.value})} /></div>
-              <div><label style={labelStyle}>نتيجة الضيف</label><input type="number" min="0" style={inputStyle} value={form.awayScore} onChange={e => setForm({...form, awayScore: e.target.value})} /></div>
+              <div>
+                <label className="admin-matches-label">الملعب</label>
+                <input className="admin-matches-input" value={form.venue} onChange={e => setForm({...form, venue: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-matches-label">نتيجة المضيف</label>
+                <input type="number" min="0" className="admin-matches-input" value={form.homeScore} onChange={e => setForm({...form, homeScore: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-matches-label">نتيجة الضيف</label>
+                <input type="number" min="0" className="admin-matches-input" value={form.awayScore} onChange={e => setForm({...form, awayScore: e.target.value})} />
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+            <div className="admin-matches-form-actions">
               <button type="submit" className="btn-red">{editing ? 'حفظ' : 'إضافة'}</button>
               <button type="button" onClick={resetForm} className="btn-outline">إلغاء</button>
             </div>
           </form>
         </div>
       )}
-      <div style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="admin-matches-table-card">
+        <table className="admin-matches-table">
           <thead>
-            <tr style={{ background: '#f9f9f9', borderBottom: '2px solid #eee' }}>
+            <tr className="admin-matches-table-head">
               {['المباراة', 'المسابقة', 'التاريخ', 'الحالة', 'النتيجة', 'الإجراءات'].map(h => (
-                <th key={h} style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 800, color: '#555', fontSize: '0.9rem' }}>{h}</th>
+                <th key={h} className="admin-matches-th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {matches.map(m => (
-              <tr key={m._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700 }}>{m.homeTeam} vs {m.awayTeam}</td>
-                <td style={{ padding: '12px 16px', color: '#666', fontSize: '0.9rem' }}>{m.competition}</td>
-                <td style={{ padding: '12px 16px', color: '#666', fontSize: '0.85rem' }}>{formatDate(m.date)}</td>
-                <td style={{ padding: '12px 16px' }}>
-                  <span className="badge" style={{ background: m.status === 'live' ? '#00aa44' : m.status === 'finished' ? '#555' : '#CC0000', color: 'white', fontSize: '0.75rem' }}>
+              <tr key={m._id} className="admin-matches-tr">
+                <td className="admin-matches-td admin-matches-strong">{m.homeTeam} vs {m.awayTeam}</td>
+                <td className="admin-matches-td admin-matches-muted">{m.competition}</td>
+                <td className="admin-matches-td admin-matches-date">{formatDate(m.date)}</td>
+                <td className="admin-matches-td">
+                  <span className="badge admin-matches-badge" style={{ background: m.status === 'live' ? '#00aa44' : m.status === 'finished' ? '#555' : '#CC0000' }}>
                     {m.status === 'live' ? 'مباشر' : m.status === 'finished' ? 'انتهت' : 'قادمة'}
                   </span>
                 </td>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#CC0000' }}>{m.homeScore !== null && m.awayScore !== null ? `${m.homeScore} - ${m.awayScore}` : '—'}</td>
-                <td style={{ padding: '12px 16px' }}>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => handleEdit(m)} style={{ padding: '6px 14px', background: '#1a73e8', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: '0.8rem' }}>تعديل</button>
-                    <button onClick={() => handleDelete(m._id)} style={{ padding: '6px 14px', background: '#CC0000', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: '0.8rem' }}>حذف</button>
+                <td className="admin-matches-td admin-matches-score">{m.homeScore !== null && m.awayScore !== null ? `${m.homeScore} - ${m.awayScore}` : '—'}</td>
+                <td className="admin-matches-td">
+                  <div className="admin-matches-actions">
+                    <button onClick={() => handleEdit(m)} className="admin-matches-btn admin-matches-btn-edit">تعديل</button>
+                    <button onClick={() => handleDelete(m._id)} className="admin-matches-btn admin-matches-btn-delete">حذف</button>
                   </div>
                 </td>
               </tr>

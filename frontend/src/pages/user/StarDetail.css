@@ -1,0 +1,109 @@
+.star-detail {
+  padding: 40px 20px;
+}
+
+.star-detail-loading {
+  text-align: center;
+  padding: 80px;
+  color: #CC0000;
+  font-size: 1.5rem;
+}
+
+.star-detail-back {
+  color: #CC0000;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.star-detail-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.star-detail-profile {
+  text-align: center;
+}
+
+.star-detail-avatar {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #CC0000;
+  margin-bottom: 20px;
+}
+
+.star-detail-name {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.star-detail-sport {
+  color: #CC0000;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.star-detail-nationality {
+  color: #888;
+}
+
+.star-detail-club {
+  color: #555;
+  margin-top: 4px;
+}
+
+.star-detail-section {
+  margin-bottom: 30px;
+}
+
+.star-detail-section-title {
+  border-right: 4px solid #CC0000;
+  padding-right: 12px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.star-detail-bio {
+  line-height: 2;
+  color: #444;
+  font-size: 1rem;
+}
+
+.star-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.star-detail-stat {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #eee;
+}
+
+.star-detail-stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #CC0000;
+}
+
+.star-detail-stat-key {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .star-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

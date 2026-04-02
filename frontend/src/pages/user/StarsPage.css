@@ -1,0 +1,92 @@
+.stars-page {
+  padding: 40px 20px;
+}
+
+.stars-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.stars-filter-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #555;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stars-filter-btn.is-active {
+  border-color: #CC0000;
+  background: #CC0000;
+  color: white;
+}
+
+.stars-loading {
+  text-align: center;
+  padding: 60px;
+  color: #CC0000;
+  font-size: 1.5rem;
+}
+
+.stars-card-link {
+  text-decoration: none;
+}
+
+.stars-card {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.stars-featured {
+  position: relative;
+}
+
+.stars-featured-badge {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  background: #FFD700;
+  color: #333;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.stars-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #CC0000;
+  margin-bottom: 16px;
+}
+
+.stars-name {
+  font-weight: 900;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.stars-sport {
+  color: #CC0000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.stars-nationality {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.stars-club {
+  color: #555;
+  font-size: 0.82rem;
+}
