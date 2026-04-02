@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => (
@@ -7,8 +6,7 @@ const Footer = () => (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', marginBottom: '40px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <div style={{ width: '40px', height: '40px', background: '#CC0000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald', fontSize: '1.3rem', fontWeight: 700 }}>S</div>
-            <span style={{ fontFamily: 'Oswald', fontSize: '1.3rem', fontWeight: 700, color: '#CC0000' }}>SPORTIF.TN</span>
+            <img src="/images/logo.jpg" alt="Logo" style={{ height: '45px', width: '45px', borderRadius: '50%', objectFit: 'cover' }} />
           </div>
           <p style={{ color: '#aaa', lineHeight: 1.8, fontSize: '0.9rem' }}>
             مصدرك الرئيسي لأحدث الأخبار والتغطيات الرياضية، مع متابعة مستمرة وتحليلات دقيقة لأهم الأحداث المحلية والعالمية.
@@ -35,7 +33,7 @@ const Footer = () => (
         </div>
       </div>
       <div style={{ borderTop: '1px solid #222', paddingTop: '20px', textAlign: 'center', color: '#666', fontSize: '0.85rem' }}>
-        © 2024 Sportif.tn - جميع الحقوق محفوظة
+        © 2026 Sportif.tn - جميع الحقوق محفوظة
       </div>
     </div>
   </footer>

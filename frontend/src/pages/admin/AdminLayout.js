@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -24,7 +23,7 @@ const AdminLayout = () => {
       <aside style={{ width: '240px', background: '#0A0A0A', position: 'fixed', top: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 100 }}>
         <div style={{ padding: '24px 20px', borderBottom: '1px solid #222' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <div style={{ width: '38px', height: '38px', background: '#CC0000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald', fontSize: '1.2rem', fontWeight: 700, color: 'white' }}>S</div>
+            <img src="/images/logo.jpg" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
             <span style={{ fontFamily: 'Oswald', fontSize: '1.1rem', fontWeight: 700, color: '#CC0000' }}>SPORTIF.TN</span>
           </Link>
           <p style={{ color: '#555', fontSize: '0.8rem', marginTop: '8px' }}>لوحة الإدارة</p>

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => { logout(); navigate('/'); };
 
@@ -14,8 +13,7 @@ const Navbar = () => {
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: '70px' }}>
         {/* Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-          <div style={{ width: '42px', height: '42px', background: '#CC0000', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald, sans-serif', fontSize: '1.4rem', fontWeight: 700, color: 'white' }}>S</div>
-          <span style={{ fontFamily: 'Oswald, sans-serif', fontSize: '1.4rem', fontWeight: 700, color: '#CC0000', letterSpacing: '1px' }}>SPORTIF.TN</span>
+          <img src="/images/logo.jpg" alt="Logo" style={{ height: '55px', width: '55px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #eee' }} />
         </Link>
 
         {/* Nav Links */}

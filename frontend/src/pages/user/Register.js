@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -24,7 +24,7 @@ const Register = () => {
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9' }}>
       <div style={{ background: 'white', padding: '50px 40px', borderRadius: '12px', width: '420px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <div style={{ width: '56px', height: '56px', background: '#CC0000', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald', fontSize: '1.6rem', fontWeight: 700, color: 'white', margin: '0 auto 12px' }}>S</div>
+          <img src="/images/logo.jpg" alt="Logo" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 12px', display: 'block' }} />
           <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#111' }}>إنشاء حساب</h1>
         </div>
         {error && <div style={{ background: '#fff5f5', color: '#CC0000', padding: '12px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', fontWeight: 600 }}>{error}</div>}
