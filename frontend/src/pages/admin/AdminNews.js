@@ -27,6 +27,15 @@ const AdminNews = () => {
   const handleEdit = (n) => { setForm({ titleAr: n.titleAr, title: n.title, contentAr: n.contentAr, content: n.content, category: n.category, image: n.image || '', featured: n.featured }); setEditing(n._id); setShowForm(true); };
   const handleDelete = async (id) => { if (window.confirm('هل تريد حذف هذا الخبر؟')) { await axios.delete(`/api/news/${id}`); fetchNews(); } };
 
+  const categoryLabels = {
+    football: 'كرة القدم',
+    basketball: 'كرة السلة',
+    tennis: 'التنس',
+    local: 'محلي',
+    international: 'دولي',
+    other: 'أخرى',
+  };
+
   return (
     <div className="admin-news">
       <div className="admin-news-header">
@@ -58,7 +67,9 @@ const AdminNews = () => {
               <div>
                 <label className="admin-news-label">التصنيف</label>
                 <select className="admin-news-input" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
-                  {['football','basketball','tennis','local','international','other'].map(c => <option key={c} value={c}>{c}</option>)}
+                  {['football','basketball','tennis','local','international','other'].map(c => (
+                    <option key={c} value={c}>{categoryLabels[c] || c}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -98,7 +109,7 @@ const AdminNews = () => {
                     <div className="admin-news-ellipsis">{n.titleAr}</div>
                   </td>
                   <td className="admin-news-td">
-                    <span className="badge badge-red admin-news-badge">{n.category}</span>
+                    <span className="badge badge-red admin-news-badge">{categoryLabels[n.category] || n.category}</span>
                   </td>
                   <td className="admin-news-td admin-news-muted">👁 {n.views}</td>
                   <td className="admin-news-td">{n.featured ? '⭐' : '—'}</td>

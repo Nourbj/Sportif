@@ -25,9 +25,8 @@ const AdminLayout = () => {
         <div className="admin-sidebar-header">
           <Link to="/" className="admin-sidebar-brand">
             <img src="/images/logo.jpg" alt="Logo" className="admin-sidebar-logo" />
-            <span className="admin-sidebar-title">SPORTIF.TN</span>
+            <span className="admin-sidebar-title">لوحة الإدارة</span>
           </Link>
-          <p className="admin-sidebar-subtitle">لوحة الإدارة</p>
         </div>
         <nav className="admin-sidebar-nav">
           {navItems.map(item => {
@@ -43,7 +42,7 @@ const AdminLayout = () => {
           })}
         </nav>
         <div className="admin-sidebar-footer">
-          <Link to="/" className="admin-sidebar-back">← العودة للموقع</Link>
+          <Link to="/" className="admin-sidebar-back">العودة للموقع ←</Link>
         </div>
       </aside>
 

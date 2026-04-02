@@ -13,7 +13,7 @@ const StarDetail = () => {
 
   return (
     <div className="container star-detail">
-      <Link to="/stars" className="star-detail-back">← العودة للنجوم</Link>
+      <Link to="/stars" className="star-detail-back">العودة للنجوم ←</Link>
       <div className="star-detail-grid">
         <div className="star-detail-profile">
           <img src={star.image || `https://picsum.photos/seed/${star._id}/300/300`} alt="" className="star-detail-avatar" />

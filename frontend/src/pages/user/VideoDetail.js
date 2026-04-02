@@ -27,7 +27,7 @@ const VideoDetail = () => {
 
   return (
     <div className="container video-detail">
-      <Link to="/videos" className="video-detail-back">← العودة للفيديوهات</Link>
+      <Link to="/videos" className="video-detail-back">العودة للفيديوهات ←</Link>
       <div className="video-detail-grid">
         <div>
           <div className="video-detail-player">

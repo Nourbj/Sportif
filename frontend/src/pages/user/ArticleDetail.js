@@ -26,7 +26,7 @@ const ArticleDetail = () => {
 
   return (
     <div className="container article-detail">
-      <Link to="/articles" className="article-detail-back">← العودة للمقالات</Link>
+      <Link to="/articles" className="article-detail-back">العودة للمقالات ←</Link>
       <div className="article-detail-grid">
         <article>
           <span className={`badge article-detail-badge article-detail-badge-${article.type}`}>{typeLabel[article.type]}</span>

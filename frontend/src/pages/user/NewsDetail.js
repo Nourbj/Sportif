@@ -23,7 +23,7 @@ const NewsDetail = () => {
     <div className="container news-detail">
       <div className="news-detail-grid">
         <article>
-          <Link to="/news" className="news-detail-back">← العودة للأخبار</Link>
+          <Link to="/news" className="news-detail-back">العودة للأخبار ←</Link>
           <span className="badge badge-red news-detail-badge">{news.category}</span>
           <h1 className="news-detail-title">{news.titleAr}</h1>
           <div className="news-detail-meta">
