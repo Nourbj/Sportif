@@ -24,11 +24,11 @@ const Home = () => {
   return (
     <div>
       {/* Hero Banner */}
-      <div style={{ background: 'linear-gradient(135deg, #CC0000 0%, #880000 100%)', color: 'white', padding: '40px 0', marginBottom: '40px' }}>
+      <div style={{ background: 'linear-gradient(135deg, #CC0000 0%, #880000 100%)', color: 'white', padding: '10px 0', marginBottom: '20px' }}>
         <div className="container">
           <div style={{ textAlign: 'center' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <img src="/images/logo.jpg" alt="Logo" style={{ height: '80px', width: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.2)' }} />
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
+              <img src="/images/logo.jpg" alt="Logo" style={{ height: '45px', width: '45px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} />
             </div>
             <p style={{ fontSize: '1.1rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto', lineHeight: 1.8 }}>
               مصدرك الرئيسي لأحدث الأخبار والتغطيات الرياضية، مع متابعة مستمرة وتحليلات دقيقة
