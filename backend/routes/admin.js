@@ -138,8 +138,13 @@ router.get('/charts', protect, adminOnly, async (req, res) => {
 
 router.get('/users', protect, adminOnly, async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort('-createdAt');
-    res.json(users);
+    const { page = 1, limit = 10 } = req.query;
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const users = await User.find().select('-password').sort('-createdAt')
+      .limit(limitNum).skip((pageNum - 1) * limitNum);
+    const total = await User.countDocuments();
+    res.json({ users, total, pages: Math.ceil(total / limitNum) });
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 

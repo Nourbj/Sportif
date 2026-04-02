@@ -1,10 +1,12 @@
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
   const { user } = useAuth();
   const { pathname } = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!user || user.role !== 'admin') return <Navigate to="/login" />;
 
@@ -19,9 +21,25 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout${sidebarOpen ? ' is-open' : ''}`}>
+      <button
+        className="admin-sidebar-toggle"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        aria-label="Toggle sidebar"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+      {sidebarOpen && (
+        <button
+          className="admin-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close sidebar"
+        />
+      )}
       {/* Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar${sidebarOpen ? ' is-open' : ''}`}>
         <div className="admin-sidebar-header">
           <Link to="/" className="admin-sidebar-brand">
             <img src="/images/logo.jpg" alt="Logo" className="admin-sidebar-logo" />
@@ -34,7 +52,12 @@ const AdminLayout = () => {
             const exactActive = item.exact && pathname === '/admin';
             const active = isActive || exactActive;
             return (
-              <Link key={item.to} to={item.to} className={`admin-sidebar-link${active ? ' is-active' : ''}`}>
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`admin-sidebar-link${active ? ' is-active' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+              >
                 <span className="admin-sidebar-icon">{item.icon}</span>
                 <span className="admin-sidebar-label">{item.label}</span>
               </Link>
@@ -42,7 +65,7 @@ const AdminLayout = () => {
           })}
         </nav>
         <div className="admin-sidebar-footer">
-          <Link to="/" className="admin-sidebar-back">العودة للموقع ←</Link>
+          <Link to="/" className="admin-sidebar-back" onClick={() => setSidebarOpen(false)}>العودة للموقع ←</Link>
         </div>
       </aside>
 

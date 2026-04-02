@@ -6,11 +6,21 @@ const AdminStars = () => {
   const [stars, setStars] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
   const empty = { nameAr: '', name: '', sport: 'Football', nationality: '', nationalityAr: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', featured: false };
   const [form, setForm] = useState(empty);
 
-  const fetch = () => axios.get('/api/stars').then(r => setStars(r.data));
-  useEffect(() => { fetch(); }, []);
+  const fetch = () => axios.get(`/api/stars?limit=${pageSize}&page=${page}`).then(r => {
+    setStars(r.data.stars || []);
+    setPages(r.data.pages || 1);
+  });
+  useEffect(() => { fetch(); }, [page, pageSize]);
+
+  useEffect(() => {
+    if (page > pages) setPage(1);
+  }, [pages, page]);
 
   const reset = () => { setForm(empty); setEditing(null); setShowForm(false); };
   const handleSubmit = async (e) => {
@@ -21,6 +31,15 @@ const AdminStars = () => {
   };
   const handleEdit = (s) => { setForm({ nameAr: s.nameAr, name: s.name || '', sport: s.sport, nationality: s.nationality, nationalityAr: s.nationalityAr || '', club: s.club || '', clubAr: s.clubAr || '', image: s.image || '', bioAr: s.bioAr || '', bio: s.bio || '', featured: s.featured }); setEditing(s._id); setShowForm(true); };
   const handleDelete = async (id) => { if (window.confirm('حذف النجم؟')) { await axios.delete(`/api/stars/${id}`); fetch(); } };
+
+  const sportLabels = {
+    Football: 'كرة القدم',
+    Tennis: 'التنس',
+    Basketball: 'كرة السلة',
+    Athletics: 'ألعاب القوى',
+    Swimming: 'السباحة',
+    Other: 'أخرى',
+  };
 
   return (
     <div className="admin-stars">
@@ -44,7 +63,16 @@ const AdminStars = () => {
               <div>
                 <label className="admin-stars-label">الرياضة *</label>
                 <select className="admin-stars-input" value={form.sport} onChange={e => setForm({...form, sport: e.target.value})}>
-                  {['Football', 'Tennis', 'Basketball', 'Athletics', 'Swimming', 'Other'].map(s => <option key={s} value={s}>{s}</option>)}
+                  {[
+                    { value: 'Football', label: 'كرة القدم' },
+                    { value: 'Tennis', label: 'التنس' },
+                    { value: 'Basketball', label: 'كرة السلة' },
+                    { value: 'Athletics', label: 'ألعاب القوى' },
+                    { value: 'Swimming', label: 'السباحة' },
+                    { value: 'Other', label: 'أخرى' },
+                  ].map(s => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -80,13 +108,55 @@ const AdminStars = () => {
           <div key={s._id} className="admin-stars-card">
             <img src={s.image || `https://picsum.photos/seed/${s._id}/100/100`} alt="" className="admin-stars-avatar" />
             <h4 className="admin-stars-name">{s.nameAr}</h4>
-            <p className="admin-stars-sport">{s.sport}</p>
+            <p className="admin-stars-sport">{sportLabels[s.sport] || s.sport}</p>
             <div className="admin-stars-actions">
               <button onClick={() => handleEdit(s)} className="admin-stars-btn admin-stars-btn-edit">تعديل</button>
               <button onClick={() => handleDelete(s._id)} className="admin-stars-btn admin-stars-btn-delete">حذف</button>
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="admin-stars-pagination">
+        <div className="admin-stars-page-size">
+          <span>عدد الأسطر:</span>
+          <select
+            className="admin-stars-page-select"
+            value={pageSize}
+            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+          >
+            {[6, 12, 24, 36].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="admin-stars-page-btn"
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          السابق
+        </button>
+        <div className="admin-stars-page-list">
+          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
+            <button
+              key={n}
+              className={`admin-stars-page-number${n === page ? ' is-active' : ''}`}
+              onClick={() => setPage(n)}
+            >
+              {n}
+            </button>
+          ))}
+          {pages > 7 && <span className="admin-stars-page-ellipsis">…</span>}
+        </div>
+        <span className="admin-stars-page-info">صفحة {page} من {pages}</span>
+        <button
+          className="admin-stars-page-btn"
+          onClick={() => setPage(p => Math.min(pages, p + 1))}
+          disabled={page === pages}
+        >
+          التالي
+        </button>
       </div>
     </div>
   );

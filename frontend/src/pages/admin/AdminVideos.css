@@ -72,6 +72,129 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
+.admin-videos-cards {
+  display: none;
+  gap: 12px;
+}
+
+.admin-videos-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-videos-card-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-videos-card-thumb {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.admin-videos-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #111;
+}
+
+.admin-videos-card-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+.admin-videos-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-videos-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-videos-page-btn {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-videos-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-videos-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-videos-page-list {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-videos-page-number {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 36px;
+}
+
+.admin-videos-page-number.is-active {
+  background: #1a73e8;
+  color: #fff;
+  border-color: #1a73e8;
+}
+
+.admin-videos-page-ellipsis {
+  color: #777;
+  font-weight: 700;
+}
+
+.admin-videos-page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #555;
+}
+
+.admin-videos-page-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .admin-videos-table {
   width: 100%;
   border-collapse: collapse;
@@ -168,10 +291,10 @@
   }
 
   .admin-videos-table-card {
-    overflow-x: auto;
+    display: none;
   }
 
-  .admin-videos-table {
-    min-width: 720px;
+  .admin-videos-cards {
+    display: grid;
   }
 }

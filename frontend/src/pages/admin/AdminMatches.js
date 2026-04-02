@@ -6,11 +6,21 @@ const AdminMatches = () => {
   const [matches, setMatches] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const emptyForm = { homeTeam: '', awayTeam: '', homeTeamLogo: '', awayTeamLogo: '', date: '', competition: '', status: 'upcoming', homeScore: '', awayScore: '', venue: '' };
   const [form, setForm] = useState(emptyForm);
 
-  const fetchMatches = () => axios.get('/api/matches').then(r => setMatches(r.data));
-  useEffect(() => { fetchMatches(); }, []);
+  const fetchMatches = () => axios.get(`/api/matches?limit=${pageSize}&page=${page}`).then(r => {
+    setMatches(r.data.matches || []);
+    setPages(r.data.pages || 1);
+  });
+  useEffect(() => { fetchMatches(); }, [page, pageSize]);
+
+  useEffect(() => {
+    if (page > pages) setPage(1);
+  }, [pages, page]);
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setShowForm(false); };
   const handleSubmit = async (e) => {
@@ -120,6 +130,70 @@ const AdminMatches = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="admin-matches-cards">
+        {matches.map(m => (
+          <div key={m._id} className="admin-matches-card">
+            <div className="admin-matches-card-head">
+              <div className="admin-matches-card-title">{m.homeTeam} vs {m.awayTeam}</div>
+              <span className="badge admin-matches-badge" style={{ background: m.status === 'live' ? '#00aa44' : m.status === 'finished' ? '#555' : '#CC0000' }}>
+                {m.status === 'live' ? 'مباشر' : m.status === 'finished' ? 'انتهت' : 'قادمة'}
+              </span>
+            </div>
+            <div className="admin-matches-card-meta">
+              <span className="admin-matches-muted">{m.competition}</span>
+              <span className="admin-matches-date">{formatDate(m.date)}</span>
+              <span className="admin-matches-score">{m.homeScore !== null && m.awayScore !== null ? `${m.homeScore} - ${m.awayScore}` : '—'}</span>
+            </div>
+            <div className="admin-matches-card-actions">
+              <button onClick={() => handleEdit(m)} className="admin-matches-btn admin-matches-btn-edit">تعديل</button>
+              <button onClick={() => handleDelete(m._id)} className="admin-matches-btn admin-matches-btn-delete">حذف</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="admin-matches-pagination">
+        <div className="admin-matches-page-size">
+          <span>عدد الأسطر:</span>
+          <select
+            className="admin-matches-page-select"
+            value={pageSize}
+            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+          >
+            {[5, 10, 20, 30].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="admin-matches-page-btn"
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          السابق
+        </button>
+        <div className="admin-matches-page-list">
+          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
+            <button
+              key={n}
+              className={`admin-matches-page-number${n === page ? ' is-active' : ''}`}
+              onClick={() => setPage(n)}
+            >
+              {n}
+            </button>
+          ))}
+          {pages > 7 && <span className="admin-matches-page-ellipsis">…</span>}
+        </div>
+        <span className="admin-matches-page-info">صفحة {page} من {pages}</span>
+        <button
+          className="admin-matches-page-btn"
+          onClick={() => setPage(p => Math.min(pages, p + 1))}
+          disabled={page === pages}
+        >
+          التالي
+        </button>
       </div>
     </div>
   );

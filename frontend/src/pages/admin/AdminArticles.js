@@ -6,11 +6,21 @@ const AdminArticles = () => {
   const [articles, setArticles] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const empty = { titleAr: '', title: '', contentAr: '', content: '', type: 'analysis', image: '' };
   const [form, setForm] = useState(empty);
 
-  const fetch = () => axios.get('/api/articles?limit=50').then(r => setArticles(r.data.articles));
-  useEffect(() => { fetch(); }, []);
+  const fetch = () => axios.get(`/api/articles?limit=${pageSize}&page=${page}`).then(r => {
+    setArticles(r.data.articles);
+    setPages(r.data.pages || 1);
+  });
+  useEffect(() => { fetch(); }, [page, pageSize]);
+
+  useEffect(() => {
+    if (page > pages) setPage(1);
+  }, [pages, page]);
 
   const reset = () => { setForm(empty); setEditing(null); setShowForm(false); };
   const handleSubmit = async (e) => {
@@ -96,6 +106,72 @@ const AdminArticles = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="admin-articles-cards">
+        {articles.map(a => (
+          <div key={a._id} className="admin-articles-card">
+            <div className="admin-articles-card-head">
+              <img src={a.image || `https://picsum.photos/seed/${a._id}/120/80`} alt="" className="admin-articles-card-thumb" />
+              <div className="admin-articles-card-info">
+                <div className="admin-articles-card-title">{a.titleAr}</div>
+                <div className="admin-articles-card-meta">
+                  <span className="badge admin-articles-badge" style={{ background: a.type === 'analysis' ? '#1a73e8' : a.type === 'opinion' ? '#e8a01a' : '#1aae6f' }}>
+                    {a.type === 'analysis' ? 'تحليل' : a.type === 'opinion' ? 'رأي' : 'تقرير'}
+                  </span>
+                  <span className="admin-articles-muted">👁 {a.views}</span>
+                  <span className="admin-articles-date">{formatDate(a.createdAt)}</span>
+                </div>
+              </div>
+            </div>
+            <div className="admin-articles-card-actions">
+              <button onClick={() => handleEdit(a)} className="admin-articles-btn admin-articles-btn-edit">تعديل</button>
+              <button onClick={() => handleDelete(a._id)} className="admin-articles-btn admin-articles-btn-delete">حذف</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="admin-articles-pagination">
+        <div className="admin-articles-page-size">
+          <span>عدد الأسطر:</span>
+          <select
+            className="admin-articles-page-select"
+            value={pageSize}
+            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+          >
+            {[5, 10, 20, 30].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="admin-articles-page-btn"
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          السابق
+        </button>
+        <div className="admin-articles-page-list">
+          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
+            <button
+              key={n}
+              className={`admin-articles-page-number${n === page ? ' is-active' : ''}`}
+              onClick={() => setPage(n)}
+            >
+              {n}
+            </button>
+          ))}
+          {pages > 7 && <span className="admin-articles-page-ellipsis">…</span>}
+        </div>
+        <span className="admin-articles-page-info">صفحة {page} من {pages}</span>
+        <button
+          className="admin-articles-page-btn"
+          onClick={() => setPage(p => Math.min(pages, p + 1))}
+          disabled={page === pages}
+        >
+          التالي
+        </button>
       </div>
     </div>
   );

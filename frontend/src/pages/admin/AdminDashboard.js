@@ -109,6 +109,15 @@ const AdminDashboard = () => {
     unknown: 'غير محدد',
   };
 
+  const sportLabels = {
+    Football: 'كرة القدم',
+    Tennis: 'التنس',
+    Basketball: 'كرة السلة',
+    Athletics: 'ألعاب القوى',
+    Swimming: 'السباحة',
+    Other: 'أخرى',
+  };
+
   const newsChartData = (charts.newsByCategory || []).map(item => ({
     key: item.name || 'unknown',
     name: newsLabels[item.name] || newsLabels.unknown,
@@ -135,7 +144,7 @@ const AdminDashboard = () => {
 
   const starsChartData = (charts.starsBySport || []).map(item => ({
     key: item.name || 'unknown',
-    name: item.name || 'غير محدد',
+    name: sportLabels[item.name] || item.name || 'غير محدد',
     value: item.value,
   }));
 

@@ -73,6 +73,130 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
+.admin-articles-cards {
+  display: none;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-articles-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-articles-card-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-articles-card-thumb {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.admin-articles-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #111;
+}
+
+.admin-articles-card-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+.admin-articles-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-articles-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-articles-page-btn {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-articles-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-articles-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-articles-page-list {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-articles-page-number {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 36px;
+}
+
+.admin-articles-page-number.is-active {
+  background: #1a73e8;
+  color: #fff;
+  border-color: #1a73e8;
+}
+
+.admin-articles-page-ellipsis {
+  color: #777;
+  font-weight: 700;
+}
+
+.admin-articles-page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #555;
+}
+
+.admin-articles-page-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .admin-articles-table {
   width: 100%;
   border-collapse: collapse;
@@ -173,10 +297,10 @@
   }
 
   .admin-articles-table-card {
-    overflow-x: auto;
+    display: none;
   }
 
-  .admin-articles-table {
-    min-width: 680px;
+  .admin-articles-cards {
+    display: grid;
   }
 }

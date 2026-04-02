@@ -95,6 +95,130 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
+.admin-news-cards {
+  display: none;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-news-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-news-card-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-news-card-thumb {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.admin-news-card-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #111;
+}
+
+.admin-news-card-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+.admin-news-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-news-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-news-page-btn {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-news-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-news-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-news-page-list {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-news-page-number {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 36px;
+}
+
+.admin-news-page-number.is-active {
+  background: #1a73e8;
+  color: #fff;
+  border-color: #1a73e8;
+}
+
+.admin-news-page-ellipsis {
+  color: #777;
+  font-weight: 700;
+}
+
+.admin-news-page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #555;
+}
+
+.admin-news-page-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .admin-news-table {
   width: 100%;
   border-collapse: collapse;
@@ -189,10 +313,10 @@
   }
 
   .admin-news-table-card {
-    overflow-x: auto;
+    display: none;
   }
 
-  .admin-news-table {
-    min-width: 720px;
+  .admin-news-cards {
+    display: grid;
   }
 }

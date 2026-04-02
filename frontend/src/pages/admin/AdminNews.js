@@ -7,13 +7,25 @@ const AdminNews = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [form, setForm] = useState({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', featured: false });
 
   const fetchNews = () => {
     setLoading(true);
-    axios.get('/api/news?limit=50').then(r => setNews(r.data.news)).finally(() => setLoading(false));
+    axios.get(`/api/news?limit=${pageSize}&page=${page}`)
+      .then(r => {
+        setNews(r.data.news);
+        setPages(r.data.pages || 1);
+      })
+      .finally(() => setLoading(false));
   };
-  useEffect(() => { fetchNews(); }, []);
+  useEffect(() => { fetchNews(); }, [page, pageSize]);
+
+  useEffect(() => {
+    if (page > pages) setPage(1);
+  }, [pages, page]);
 
   const resetForm = () => { setForm({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', featured: false }); setEditing(null); setShowForm(false); };
 
@@ -125,6 +137,70 @@ const AdminNews = () => {
           </table>
         </div>
       )}
+
+      <div className="admin-news-cards">
+        {news.map(n => (
+          <div key={n._id} className="admin-news-card">
+            <div className="admin-news-card-head">
+              <img src={n.image || `https://picsum.photos/seed/${n._id}/120/80`} alt="" className="admin-news-card-thumb" />
+              <div className="admin-news-card-info">
+                <div className="admin-news-card-title">{n.titleAr}</div>
+                <div className="admin-news-card-meta">
+                  <span className="badge badge-red admin-news-badge">{categoryLabels[n.category] || n.category}</span>
+                  <span className="admin-news-muted">👁 {n.views}</span>
+                  <span>{n.featured ? '⭐' : '—'}</span>
+                </div>
+              </div>
+            </div>
+            <div className="admin-news-card-actions">
+              <button onClick={() => handleEdit(n)} className="admin-news-btn admin-news-btn-edit">تعديل</button>
+              <button onClick={() => handleDelete(n._id)} className="admin-news-btn admin-news-btn-delete">حذف</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="admin-news-pagination">
+        <div className="admin-news-page-size">
+          <span>عدد الأسطر:</span>
+          <select
+            className="admin-news-page-select"
+            value={pageSize}
+            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+          >
+            {[5, 10, 20, 30].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="admin-news-page-btn"
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          السابق
+        </button>
+        <div className="admin-news-page-list">
+          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
+            <button
+              key={n}
+              className={`admin-news-page-number${n === page ? ' is-active' : ''}`}
+              onClick={() => setPage(n)}
+            >
+              {n}
+            </button>
+          ))}
+          {pages > 7 && <span className="admin-news-page-ellipsis">…</span>}
+        </div>
+        <span className="admin-news-page-info">صفحة {page} من {pages}</span>
+        <button
+          className="admin-news-page-btn"
+          onClick={() => setPage(p => Math.min(pages, p + 1))}
+          disabled={page === pages}
+        >
+          التالي
+        </button>
+      </div>
     </div>
   );
 };
