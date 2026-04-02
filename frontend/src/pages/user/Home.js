@@ -13,17 +13,17 @@ const Home = () => {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/news?limit=6').then(r => setNews(r.data.news)).catch(() => {});
-    axios.get('/api/matches/today').then(r => setMatches(r.data)).catch(() => {});
-    axios.get('/api/videos?limit=4').then(r => setVideos(r.data.videos)).catch(() => {});
-    axios.get('/api/stars?featured=true').then(r => setStars(r.data)).catch(() => {});
+    axios.get('/api/news?limit=6').then(r => setNews(r.data.news)).catch(() => { });
+    axios.get('/api/matches/today').then(r => setMatches(r.data)).catch(() => { });
+    axios.get('/api/videos?limit=4').then(r => setVideos(r.data.videos)).catch(() => { });
+    axios.get('/api/stars?featured=true').then(r => setStars(r.data)).catch(() => { });
   }, []);
 
   const featured = news.filter(n => n.featured).slice(0, 3);
   const restNews = news.filter(n => !n.featured).slice(0, 4);
 
   return (
-    <div>
+    <div className='home-page'>
       {/* Hero Banner */}
       <div className="home-hero">
         <div className="container">
@@ -89,8 +89,8 @@ const Home = () => {
                   <div className="home-match-top">
                     <span className="home-match-competition">{m.competition}</span>
                     {m.status === 'live' ? <span className="badge badge-live">🔴 مباشر</span> :
-                     m.status === 'finished' ? <span className="badge home-match-finished">انتهت</span> :
-                     <span className="home-match-time">{formatTime(m.date)}</span>}
+                      m.status === 'finished' ? <span className="badge home-match-finished">انتهت</span> :
+                        <span className="home-match-time">{formatTime(m.date)}</span>}
                   </div>
                   <div className="home-match-row">
                     <div className="home-match-team">

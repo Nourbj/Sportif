@@ -1,5 +1,6 @@
 .news-page {
   padding: 40px 20px;
+  min-width: 85%;
 }
 
 .news-filters {
@@ -34,12 +35,22 @@
   font-size: 1.5rem;
 }
 
+.news-empty {
+  padding: 24px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  color: #666;
+  font-weight: 700;
+}
+
 .news-grid {
   margin-bottom: 40px;
 }
 
 .news-card-link {
   text-decoration: none;
+  display: block;
 }
 
 .news-card-img {

@@ -1,5 +1,6 @@
 .matches-page {
   padding: 40px 20px;
+  min-width: 85%;
 }
 
 .matches-filters {

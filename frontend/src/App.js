@@ -30,11 +30,13 @@ import AdminArticles from './pages/admin/AdminArticles';
 import AdminUsers from './pages/admin/AdminUsers';
 
 const PublicLayout = ({ children }) => (
-  <>
+  <div className="app-shell">
     <Navbar />
-    {children}
+    <main className="app-main">
+      {children}
+    </main>
     <Footer />
-  </>
+  </div>
 );
 
 function App() {

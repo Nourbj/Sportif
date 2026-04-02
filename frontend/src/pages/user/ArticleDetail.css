@@ -1,5 +1,6 @@
 .article-detail {
   padding: 40px 20px;
+  min-width: 85%;
 }
 
 .article-detail-loading {

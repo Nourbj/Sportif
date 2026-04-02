@@ -1,5 +1,6 @@
 .star-detail {
   padding: 40px 20px;
+  min-width: 85%;
 }
 
 .star-detail-loading {
@@ -10,6 +11,7 @@
 }
 
 .star-detail-back {
+  margin-top: 20px;
   color: #CC0000;
   font-weight: 700;
   margin-bottom: 20px;

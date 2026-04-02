@@ -32,7 +32,11 @@ const NewsPage = () => {
           </button>
         ))}
       </div>
-      {loading ? <div className="news-loading">⏳ جار التحميل...</div> : (
+      {loading ? <div className="news-loading">⏳ جار التحميل...</div> : news.length === 0 ? (
+        <div className="news-empty">
+          لا توجد أخبار حالياً
+        </div>
+      ) : (
         <>
           <div className="grid-3 news-grid">
             {news.map(n => (

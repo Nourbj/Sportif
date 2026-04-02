@@ -1,5 +1,6 @@
 .news-detail {
   padding: 40px 20px;
+  min-width: 85%;
 }
 
 .news-detail-loading {
@@ -10,6 +11,7 @@
 }
 
 .news-detail-grid {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 40px;
@@ -21,6 +23,7 @@
   margin-bottom: 20px;
   display: inline-block;
   text-decoration: none;
+  margin-left: 20px;
 }
 
 .news-detail-badge {
