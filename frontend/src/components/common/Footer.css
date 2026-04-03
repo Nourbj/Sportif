@@ -62,9 +62,25 @@
 }
 
 .footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.footer-contact-item {
   color: #aaa;
   font-size: 0.85rem;
-  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-contact-icon {
+  color: #CC0000;
+  width: 18px;
+  text-align: center;
+  font-size: 0.95rem;
 }
 
 .footer-ltr {

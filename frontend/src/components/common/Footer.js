@@ -27,11 +27,20 @@ const Footer = () => (
         </div>
         <div>
           <h4 className="footer-title">تواصل معنا</h4>
-          <p className="footer-contact">
-            📧 contact@sportif.tn<br />
-            📱 <span dir="ltr" className="footer-ltr">+216 27601059</span><br />
-            📍 تونس العاصمة، تونس
-          </p>
+          <div className="footer-contact">
+            <div className="footer-contact-item">
+              <i className="fas fa-envelope footer-contact-icon"></i>
+              <span>contact@sportif.tn</span>
+            </div>
+            <div className="footer-contact-item">
+              <i className="fas fa-phone-alt footer-contact-icon"></i>
+              <span dir="ltr" className="footer-ltr">+216 27601059</span>
+            </div>
+            <div className="footer-contact-item">
+              <i className="fas fa-map-marker-alt footer-contact-icon"></i>
+              <span>تونس العاصمة، تونس</span>
+            </div>
+          </div>
           <div className="footer-social">
             <span className="footer-social-item">
               <i className="fab fa-facebook footer-social-icon footer-social-facebook"></i> sportif.tn
