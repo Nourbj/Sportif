@@ -35,7 +35,7 @@ const StarsPage = () => {
             <Link key={s._id} to={`/stars/${s._id}`} className="stars-card-link">
               <div className="card stars-card">
                 {s.featured && <div className="stars-featured"><span className="stars-featured-badge">⭐ نجم</span></div>}
-                {s.image && s.image.length > 5 && <img src={getFullImageUrl(s.image)} alt="" className="stars-avatar" />}
+                <img src={s.image && s.image.length > 5 ? getFullImageUrl(s.image) : '/images/placeholder.png'} alt="" className="stars-avatar" />
                 <h3 className="stars-name">{s.nameAr}</h3>
                 <p className="stars-sport">{s.sport}</p>
                 <p className="stars-nationality">{s.nationalityAr || s.nationality}</p>

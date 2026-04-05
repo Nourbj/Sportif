@@ -43,7 +43,7 @@ const NewsPage = () => {
             {news.map(n => (
               <Link key={n._id} to={`/news/${n._id}`} className="news-card-link">
                 <div className="card">
-                  {n.image && n.image.length > 5 && <img src={getFullImageUrl(n.image)} alt="" className="news-card-img" />}
+                  <img src={n.image && n.image.length > 5 ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="news-card-img" />
                   <div className="news-card-body">
                     <div className="news-card-meta">
                       <span className="badge badge-red news-card-badge">{n.category}</span>

@@ -40,7 +40,7 @@ const VideosPage = () => {
               <Link key={v._id} to={`/videos/${v._id}`} className="videos-card-link">
                 <div className="card">
                   <div className="videos-thumb">
-                    {v.thumbnail && <img src={getFullImageUrl(v.thumbnail)} alt="" className="videos-thumb-img" />}
+                    <img src={v.thumbnail ? getFullImageUrl(v.thumbnail) : '/images/placeholder.png'} alt="" className="videos-thumb-img" />
                     <div className="videos-thumb-overlay">
                       <div className="videos-play">▶</div>
                     </div>

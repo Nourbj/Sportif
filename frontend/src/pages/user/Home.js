@@ -48,7 +48,7 @@ const Home = () => {
               {featured[0] && (
                 <Link to={`/news/${featured[0]._id}`} className="featured-main">
                   <div className="card featured-main-card">
-                    {featured[0].image && <img src={getFullImageUrl(featured[0].image)} alt="" className="featured-main-img" />}
+                    <img src={featured[0].image ? getFullImageUrl(featured[0].image) : '/images/placeholder.png'} alt="" className="featured-main-img" />
                     <div className="featured-main-overlay">
                       <span className="badge badge-red featured-main-badge">{featured[0].category}</span>
                       <h3 className="featured-main-title">{featured[0].titleAr}</h3>
@@ -62,7 +62,7 @@ const Home = () => {
                   {featured.slice(1, 3).map(n => (
                     <Link key={n._id} to={`/news/${n._id}`} className="featured-side-link">
                       <div className="card featured-side-card">
-                        {n.image && <img src={getFullImageUrl(n.image)} alt="" className="featured-side-img" />}
+                        <img src={n.image ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="featured-side-img" />
                         <div className="featured-side-overlay">
                           <h4 className="featured-side-title">{n.titleAr}</h4>
                         </div>
@@ -125,7 +125,7 @@ const Home = () => {
               {restNews.map(n => (
                 <Link key={n._id} to={`/news/${n._id}`} className="home-card-link">
                   <div className="card">
-                    {typeof n.image === 'string' && n.image.length > 5 && <img src={getFullImageUrl(n.image)} alt="" className="news-card-img" />}
+                    <img src={typeof n.image === 'string' && n.image.length > 5 ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="home-card-img" />
                     <div className="news-card-body">
                       <div className="news-card-meta">
                         <span className="badge badge-red news-card-badge">{n.category}</span>
@@ -180,7 +180,7 @@ const Home = () => {
               {stars.map(s => (
                 <Link key={s._id} to={`/stars/${s._id}`} className="home-card-link">
                   <div className="card home-star-card">
-                    {s.image && <img src={getFullImageUrl(s.image)} alt="" className="home-star-img" />}
+                    <img src={s.image ? getFullImageUrl(s.image) : '/images/placeholder.png'} alt="" className="home-star-img" />
                     <h4 className="home-star-name">{s.nameAr}</h4>
                     <p className="home-star-sport">{s.sport}</p>
                     <p className="home-star-nationality">{s.nationalityAr || s.nationality}</p>

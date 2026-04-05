@@ -39,7 +39,7 @@ const ArticlesPage = () => {
             {articles.map(a => (
               <Link key={a._id} to={`/articles/${a._id}`} className="articles-card-link">
                 <div className="card">
-                  {a.image && a.image.length > 5 && <img src={getFullImageUrl(a.image)} alt="" className="articles-card-img" />}
+                  <img src={a.image && a.image.length > 5 ? getFullImageUrl(a.image) : '/images/placeholder.png'} alt="" className="articles-card-img" />
                   <div className="articles-card-body">
                     <div className="articles-card-meta">
                       <span className={`badge articles-card-badge articles-card-badge-${a.type}`}>
