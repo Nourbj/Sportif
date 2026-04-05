@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_OPTIONS=--no-deprecation node server.js",
-    "dev": "NODE_OPTIONS=--no-deprecation nodemon server.js",
-    "seed": "NODE_OPTIONS=--no-deprecation node seed.js"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation node server.js",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation nodemon server.js",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation node seed.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -19,6 +19,7 @@
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.0.2"
   }
 }
