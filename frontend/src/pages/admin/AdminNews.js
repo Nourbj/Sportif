@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './AdminNews.css';
 
 const AdminNews = () => {
@@ -10,7 +11,8 @@ const AdminNews = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [form, setForm] = useState({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', featured: false });
+  const [form, setForm] = useState({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false });
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const fetchNews = () => {
     setLoading(true);
@@ -27,16 +29,31 @@ const AdminNews = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
-  const resetForm = () => { setForm({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', featured: false }); setEditing(null); setShowForm(false); };
+  const resetForm = () => { 
+    setForm({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false }); 
+    setSelectedFile(null);
+    setEditing(null); 
+    setShowForm(false); 
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editing) await axios.put(`/api/news/${editing}`, form);
-    else await axios.post('/api/news', form);
+    
+    const formData = new FormData();
+    Object.keys(form).forEach(key => {
+      formData.append(key, form[key]);
+    });
+    if (selectedFile) {
+      formData.append('image', selectedFile);
+    }
+
+    if (editing) await axios.put(`/api/news/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    else await axios.post('/api/news', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    
     resetForm(); fetchNews();
   };
 
-  const handleEdit = (n) => { setForm({ titleAr: n.titleAr, title: n.title, contentAr: n.contentAr, content: n.content, category: n.category, image: n.image || '', featured: n.featured }); setEditing(n._id); setShowForm(true); };
+  const handleEdit = (n) => { setForm({ titleAr: n.titleAr, title: n.title, contentAr: n.contentAr, content: n.content, category: n.category, image: n.image || '', videoUrl: n.videoUrl || '', featured: n.featured }); setEditing(n._id); setShowForm(true); };
   const handleDelete = async (id) => { if (window.confirm('هل تريد حذف هذا الخبر؟')) { await axios.delete(`/api/news/${id}`); fetchNews(); } };
 
   const categoryLabels = {
@@ -85,8 +102,13 @@ const AdminNews = () => {
                 </select>
               </div>
               <div>
-                <label className="admin-news-label">رابط الصورة</label>
-                <input className="admin-news-input" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+                <label className="admin-news-label">الصورة (تحميل ملف)</label>
+                <input type="file" className="admin-news-input" onChange={e => setSelectedFile(e.target.files[0])} accept="image/*" />
+                {form.image && <div className="admin-news-image-preview">الصورة الحالية: {form.image.split('/').pop()}</div>}
+              </div>
+              <div>
+                <label className="admin-news-label">رابط الفيديو</label>
+                <input className="admin-news-input" value={form.videoUrl} onChange={e => setForm({...form, videoUrl: e.target.value})} placeholder="https://..." />
               </div>
               <div className="admin-news-check">
                 <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({...form, featured: e.target.checked})} />
@@ -106,7 +128,7 @@ const AdminNews = () => {
           <table className="admin-news-table">
             <thead>
               <tr className="admin-news-table-head">
-                {['الصورة', 'العنوان', 'التصنيف', 'المشاهدات', 'مميز', 'الإجراءات'].map(h => (
+                {['الصورة', 'العنوان', 'التصنيف', 'المشاهدات', 'مميز', 'فيديو', 'الإجراءات'].map(h => (
                   <th key={h} className="admin-news-th">{h}</th>
                 ))}
               </tr>
@@ -115,7 +137,7 @@ const AdminNews = () => {
               {news.map(n => (
                 <tr key={n._id} className="admin-news-tr">
                   <td className="admin-news-td">
-                    <img src={n.image || `https://picsum.photos/seed/${n._id}/60/40`} alt="" className="admin-news-thumb" />
+                    <img src={getFullImageUrl(n.image) || `https://picsum.photos/seed/${n._id}/60/40`} alt="" className="admin-news-thumb" />
                   </td>
                   <td className="admin-news-td admin-news-title-cell">
                     <div className="admin-news-ellipsis">{n.titleAr}</div>
@@ -125,6 +147,7 @@ const AdminNews = () => {
                   </td>
                   <td className="admin-news-td admin-news-muted">👁 {n.views}</td>
                   <td className="admin-news-td">{n.featured ? '⭐' : '—'}</td>
+                  <td className="admin-news-td">{n.videoUrl ? '📹' : '—'}</td>
                   <td className="admin-news-td">
                     <div className="admin-news-actions">
                       <button onClick={() => handleEdit(n)} className="admin-news-btn admin-news-btn-edit">تعديل</button>
@@ -142,7 +165,7 @@ const AdminNews = () => {
         {news.map(n => (
           <div key={n._id} className="admin-news-card">
             <div className="admin-news-card-head">
-              <img src={n.image || `https://picsum.photos/seed/${n._id}/120/80`} alt="" className="admin-news-card-thumb" />
+              <img src={getFullImageUrl(n.image) || `https://picsum.photos/seed/${n._id}/120/80`} alt="" className="admin-news-card-thumb" />
               <div className="admin-news-card-info">
                 <div className="admin-news-card-title">{n.titleAr}</div>
                 <div className="admin-news-card-meta">

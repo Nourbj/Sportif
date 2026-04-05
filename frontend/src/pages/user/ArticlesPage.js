@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './ArticlesPage.css';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -38,7 +39,7 @@ const ArticlesPage = () => {
             {articles.map(a => (
               <Link key={a._id} to={`/articles/${a._id}`} className="articles-card-link">
                 <div className="card">
-                  <img src={a.image || `https://picsum.photos/seed/${a._id}/400/220`} alt="" className="articles-card-img" />
+                  {a.image && a.image.length > 5 && <img src={getFullImageUrl(a.image)} alt="" className="articles-card-img" />}
                   <div className="articles-card-body">
                     <div className="articles-card-meta">
                       <span className={`badge articles-card-badge articles-card-badge-${a.type}`}>

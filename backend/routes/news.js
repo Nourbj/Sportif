@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const News = require('../models/News');
 const { protect, adminOnly } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 router.get('/', async (req, res) => {
   try {
@@ -24,16 +25,20 @@ router.get('/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.post('/', protect, adminOnly, async (req, res) => {
+router.post('/', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
-    const news = await News.create({ ...req.body, author: req.user._id });
+    const data = { ...req.body, author: req.user._id };
+    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    const news = await News.create(data);
     res.status(201).json(news);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.put('/:id', protect, adminOnly, async (req, res) => {
+router.put('/:id', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
-    const news = await News.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    const news = await News.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(news);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

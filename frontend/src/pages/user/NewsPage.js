@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './NewsPage.css';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -42,7 +43,7 @@ const NewsPage = () => {
             {news.map(n => (
               <Link key={n._id} to={`/news/${n._id}`} className="news-card-link">
                 <div className="card">
-                  <img src={n.image || `https://picsum.photos/seed/${n._id}/400/220`} alt="" className="news-card-img" />
+                  {n.image && n.image.length > 5 && <img src={getFullImageUrl(n.image)} alt="" className="news-card-img" />}
                   <div className="news-card-body">
                     <div className="news-card-meta">
                       <span className="badge badge-red news-card-badge">{n.category}</span>

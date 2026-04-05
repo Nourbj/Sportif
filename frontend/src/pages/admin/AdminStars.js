@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './AdminStars.css';
 
 const AdminStars = () => {
@@ -9,8 +10,9 @@ const AdminStars = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const empty = { nameAr: '', name: '', sport: 'Football', nationality: '', nationalityAr: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', featured: false };
+  const empty = { nameAr: '', name: '', sport: 'Football', nationality: '', nationalityAr: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', videoUrl: '', featured: false };
   const [form, setForm] = useState(empty);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const fetch = () => axios.get(`/api/stars?limit=${pageSize}&page=${page}`).then(r => {
     setStars(r.data.stars || []);
@@ -22,14 +24,29 @@ const AdminStars = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
-  const reset = () => { setForm(empty); setEditing(null); setShowForm(false); };
+  const reset = () => { 
+    setForm(empty); 
+    setSelectedFile(null);
+    setEditing(null); 
+    setShowForm(false); 
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editing) await axios.put(`/api/stars/${editing}`, form);
-    else await axios.post('/api/stars', form);
+    
+    const formData = new FormData();
+    Object.keys(form).forEach(key => {
+      formData.append(key, form[key]);
+    });
+    if (selectedFile) {
+      formData.append('image', selectedFile);
+    }
+
+    if (editing) await axios.put(`/api/stars/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    else await axios.post('/api/stars', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    
     reset(); fetch();
   };
-  const handleEdit = (s) => { setForm({ nameAr: s.nameAr, name: s.name || '', sport: s.sport, nationality: s.nationality, nationalityAr: s.nationalityAr || '', club: s.club || '', clubAr: s.clubAr || '', image: s.image || '', bioAr: s.bioAr || '', bio: s.bio || '', featured: s.featured }); setEditing(s._id); setShowForm(true); };
+  const handleEdit = (s) => { setForm({ nameAr: s.nameAr, name: s.name || '', sport: s.sport, nationality: s.nationality, nationalityAr: s.nationalityAr || '', club: s.club || '', clubAr: s.clubAr || '', image: s.image || '', bioAr: s.bioAr || '', bio: s.bio || '', videoUrl: s.videoUrl || '', featured: s.featured }); setEditing(s._id); setShowForm(true); };
   const handleDelete = async (id) => { if (window.confirm('حذف النجم؟')) { await axios.delete(`/api/stars/${id}`); fetch(); } };
 
   const sportLabels = {
@@ -84,8 +101,13 @@ const AdminStars = () => {
                 <input className="admin-stars-input" value={form.clubAr} onChange={e => setForm({...form, clubAr: e.target.value})} />
               </div>
               <div>
-                <label className="admin-stars-label">رابط الصورة</label>
-                <input className="admin-stars-input" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+                <label className="admin-stars-label">الصورة (تحميل ملف)</label>
+                <input type="file" className="admin-stars-input" onChange={e => setSelectedFile(e.target.files[0])} accept="image/*" />
+                {form.image && <div className="admin-stars-image-preview" style={{fontSize:'0.8rem', color:'#666', marginTop:'4px'}}>الصورة الحالية: {form.image.split('/').pop()}</div>}
+              </div>
+              <div>
+                <label className="admin-stars-label">رابط الفيديو</label>
+                <input className="admin-stars-input" value={form.videoUrl} onChange={e => setForm({...form, videoUrl: e.target.value})} placeholder="https://..." />
               </div>
               <div className="admin-stars-span">
                 <label className="admin-stars-label">السيرة الذاتية بالعربية</label>
@@ -106,8 +128,8 @@ const AdminStars = () => {
       <div className="admin-stars-grid">
         {stars.map(s => (
           <div key={s._id} className="admin-stars-card">
-            <img src={s.image || `https://picsum.photos/seed/${s._id}/100/100`} alt="" className="admin-stars-avatar" />
-            <h4 className="admin-stars-name">{s.nameAr}</h4>
+            <img src={getFullImageUrl(s.image) || `https://picsum.photos/seed/${s._id}/100/100`} alt="" className="admin-stars-avatar" />
+            <h4 className="admin-stars-name">{s.nameAr} {s.videoUrl && '📹'}</h4>
             <p className="admin-stars-sport">{sportLabels[s.sport] || s.sport}</p>
             <div className="admin-stars-actions">
               <button onClick={() => handleEdit(s)} className="admin-stars-btn admin-stars-btn-edit">تعديل</button>

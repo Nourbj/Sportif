@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
@@ -47,7 +48,7 @@ const Home = () => {
               {featured[0] && (
                 <Link to={`/news/${featured[0]._id}`} className="featured-main">
                   <div className="card featured-main-card">
-                    <img src={featured[0].image || `https://picsum.photos/seed/${featured[0]._id}/800/450`} alt="" className="featured-main-img" />
+                    {featured[0].image && <img src={getFullImageUrl(featured[0].image)} alt="" className="featured-main-img" />}
                     <div className="featured-main-overlay">
                       <span className="badge badge-red featured-main-badge">{featured[0].category}</span>
                       <h3 className="featured-main-title">{featured[0].titleAr}</h3>
@@ -61,7 +62,7 @@ const Home = () => {
                   {featured.slice(1, 3).map(n => (
                     <Link key={n._id} to={`/news/${n._id}`} className="featured-side-link">
                       <div className="card featured-side-card">
-                        <img src={n.image || `https://picsum.photos/seed/${n._id}/400/200`} alt="" className="featured-side-img" />
+                        {n.image && <img src={getFullImageUrl(n.image)} alt="" className="featured-side-img" />}
                         <div className="featured-side-overlay">
                           <h4 className="featured-side-title">{n.titleAr}</h4>
                         </div>
@@ -124,11 +125,14 @@ const Home = () => {
               {restNews.map(n => (
                 <Link key={n._id} to={`/news/${n._id}`} className="home-card-link">
                   <div className="card">
-                    <img src={n.image || `https://picsum.photos/seed/${n._id}/400/220`} alt="" className="home-card-img" />
-                    <div className="home-card-body">
-                      <span className="badge badge-red home-card-badge">{n.category}</span>
-                      <h4 className="home-card-title">{n.titleAr}</h4>
-                      <p className="home-card-date">{formatDate(n.createdAt)}</p>
+                    {typeof n.image === 'string' && n.image.length > 5 && <img src={getFullImageUrl(n.image)} alt="" className="news-card-img" />}
+                    <div className="news-card-body">
+                      <div className="news-card-meta">
+                        <span className="badge badge-red news-card-badge">{n.category}</span>
+                        <span className="news-card-date">{formatDate(n.createdAt)}</span>
+                      </div>
+                      <h3 className="news-card-title">{n.titleAr}</h3>
+                      <p className="news-card-views">👁 {n.views} مشاهدة</p>
                     </div>
                   </div>
                 </Link>
@@ -149,7 +153,7 @@ const Home = () => {
                 <Link key={v._id} to={`/videos/${v._id}`} className="home-card-link">
                   <div className="card">
                     <div className="home-video-thumb">
-                      <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/400/225`} alt="" className="home-video-img" />
+                      {v.thumbnail && <img src={v.thumbnail} alt="" className="home-video-img" />}
                       <div className="home-video-overlay">
                         <div className="home-video-play">▶</div>
                       </div>
@@ -176,7 +180,7 @@ const Home = () => {
               {stars.map(s => (
                 <Link key={s._id} to={`/stars/${s._id}`} className="home-card-link">
                   <div className="card home-star-card">
-                    <img src={s.image || `https://picsum.photos/seed/${s._id}/200/200`} alt="" className="home-star-img" />
+                    {s.image && <img src={getFullImageUrl(s.image)} alt="" className="home-star-img" />}
                     <h4 className="home-star-name">{s.nameAr}</h4>
                     <p className="home-star-sport">{s.sport}</p>
                     <p className="home-star-nationality">{s.nationalityAr || s.nationality}</p>

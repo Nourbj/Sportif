@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './MatchesPage.css';
 
 const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
@@ -50,7 +51,11 @@ const MatchesPage = () => {
               </div>
               <div className="matches-score-row">
                 <div className="matches-team">
-                  <div className="matches-team-logo">{m.homeTeamLogo || '⚽'}</div>
+                  <div className="matches-team-logo">
+                    {m.homeTeamLogo && !m.homeTeamLogo.startsWith('http') && !m.homeTeamLogo.startsWith('/') ? m.homeTeamLogo : (
+                      <img src={getFullImageUrl(m.homeTeamLogo) || '⚽'} alt="" style={{width: '32px'}} />
+                    )}
+                  </div>
                   <div className="matches-team-name">{m.homeTeam}</div>
                 </div>
                 <div className="matches-score">
@@ -62,7 +67,11 @@ const MatchesPage = () => {
                   {m.status === 'upcoming' && <div className="matches-time">{formatTime(m.date)}</div>}
                 </div>
                 <div className="matches-team">
-                  <div className="matches-team-logo">{m.awayTeamLogo || '⚽'}</div>
+                  <div className="matches-team-logo">
+                    {m.awayTeamLogo && !m.awayTeamLogo.startsWith('http') && !m.awayTeamLogo.startsWith('/') ? m.awayTeamLogo : (
+                      <img src={getFullImageUrl(m.awayTeamLogo) || '⚽'} alt="" style={{width: '32px'}} />
+                    )}
+                  </div>
                   <div className="matches-team-name">{m.awayTeam}</div>
                 </div>
               </div>

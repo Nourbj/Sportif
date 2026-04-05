@@ -12,8 +12,8 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "start": "NODE_OPTIONS=--no-deprecation react-scripts start",
+    "build": "NODE_OPTIONS=--no-deprecation react-scripts build"
   },
   "proxy": "http://localhost:5000",
   "browserslist": {

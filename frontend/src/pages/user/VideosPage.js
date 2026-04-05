@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './VideosPage.css';
 
 const VideosPage = () => {
@@ -39,7 +40,7 @@ const VideosPage = () => {
               <Link key={v._id} to={`/videos/${v._id}`} className="videos-card-link">
                 <div className="card">
                   <div className="videos-thumb">
-                    <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/640/360`} alt="" className="videos-thumb-img" />
+                    {v.thumbnail && <img src={getFullImageUrl(v.thumbnail)} alt="" className="videos-thumb-img" />}
                     <div className="videos-thumb-overlay">
                       <div className="videos-play">▶</div>
                     </div>

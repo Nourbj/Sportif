@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Match = require('../models/Match');
 const { protect, adminOnly } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 router.get('/', async (req, res) => {
   try {
@@ -40,16 +41,33 @@ router.get('/today', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.post('/', protect, adminOnly, async (req, res) => {
+router.post('/', protect, adminOnly, upload.fields([
+  { name: 'homeTeamLogo', maxCount: 1 },
+  { name: 'awayTeamLogo', maxCount: 1 }
+]), async (req, res) => {
   try {
-    const match = await Match.create(req.body);
+    const data = { ...req.body };
+    if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
+    if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
+    
+    if (data.homeScore === '') data.homeScore = null;
+    if (data.awayScore === '') data.awayScore = null;
+
+    const match = await Match.create(data);
     res.status(201).json(match);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.put('/:id', protect, adminOnly, async (req, res) => {
+router.put('/:id', protect, adminOnly, upload.fields([
+  { name: 'homeTeamLogo', maxCount: 1 },
+  { name: 'awayTeamLogo', maxCount: 1 }
+]), async (req, res) => {
   try {
-    const match = await Match.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
+    if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
+
+    const match = await Match.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(match);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

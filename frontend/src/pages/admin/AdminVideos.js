@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './AdminVideos.css';
 
 const AdminVideos = () => {
@@ -11,6 +12,7 @@ const AdminVideos = () => {
   const [pageSize, setPageSize] = useState(10);
   const empty = { titleAr: '', title: '', descriptionAr: '', description: '', url: '', thumbnail: '', category: 'highlights' };
   const [form, setForm] = useState(empty);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const fetch = () => axios.get(`/api/videos?limit=${pageSize}&page=${page}`).then(r => {
     setVideos(r.data.videos);
@@ -22,11 +24,26 @@ const AdminVideos = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
-  const reset = () => { setForm(empty); setEditing(null); setShowForm(false); };
+  const reset = () => { 
+    setForm(empty); 
+    setSelectedFile(null);
+    setEditing(null); 
+    setShowForm(false); 
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editing) await axios.put(`/api/videos/${editing}`, form);
-    else await axios.post('/api/videos', form);
+    
+    const formData = new FormData();
+    Object.keys(form).forEach(key => {
+      formData.append(key, form[key]);
+    });
+    if (selectedFile) {
+      formData.append('thumbnail', selectedFile);
+    }
+
+    if (editing) await axios.put(`/api/videos/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    else await axios.post('/api/videos', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    
     reset(); fetch();
   };
   const handleEdit = (v) => { setForm({ titleAr: v.titleAr, title: v.title || '', descriptionAr: v.descriptionAr || '', description: v.description || '', url: v.url, thumbnail: v.thumbnail || '', category: v.category }); setEditing(v._id); setShowForm(true); };
@@ -63,8 +80,9 @@ const AdminVideos = () => {
                 <input className="admin-videos-input" value={form.url} onChange={e => setForm({...form, url: e.target.value})} required placeholder="https://www.youtube.com/embed/..." />
               </div>
               <div>
-                <label className="admin-videos-label">رابط الصورة المصغرة</label>
-                <input className="admin-videos-input" value={form.thumbnail} onChange={e => setForm({...form, thumbnail: e.target.value})} />
+                <label className="admin-videos-label">الصورة المصغرة (تحميل ملف)</label>
+                <input type="file" className="admin-videos-input" onChange={e => setSelectedFile(e.target.files[0])} accept="image/*" />
+                {form.thumbnail && <div className="admin-videos-image-preview" style={{fontSize:'0.8rem', color:'#666', marginTop:'4px'}}>الصورة الحالية: {form.thumbnail.split('/').pop()}</div>}
               </div>
               <div>
                 <label className="admin-videos-label">التصنيف</label>
@@ -99,7 +117,7 @@ const AdminVideos = () => {
             {videos.map(v => (
               <tr key={v._id} className="admin-videos-tr">
                 <td className="admin-videos-td">
-                  <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/80/50`} alt="" className="admin-videos-thumb" />
+                  <img src={getFullImageUrl(v.thumbnail) || `https://picsum.photos/seed/${v._id}/80/50`} alt="" className="admin-videos-thumb" />
                 </td>
                 <td className="admin-videos-td admin-videos-title-cell">
                   <div className="admin-videos-ellipsis">{v.titleAr}</div>
@@ -124,7 +142,7 @@ const AdminVideos = () => {
         {videos.map(v => (
           <div key={v._id} className="admin-videos-card">
             <div className="admin-videos-card-head">
-              <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/120/80`} alt="" className="admin-videos-card-thumb" />
+              <img src={getFullImageUrl(v.thumbnail) || `https://picsum.photos/seed/${v._id}/120/80`} alt="" className="admin-videos-card-thumb" />
               <div className="admin-videos-card-info">
                 <div className="admin-videos-card-title">{v.titleAr}</div>
                 <div className="admin-videos-card-meta">

@@ -104,6 +104,40 @@
   margin-top: 4px;
 }
 
+.star-detail-video-wrapper {
+  margin-bottom: 30px;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.star-detail-direct-video {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.star-detail-video-link {
+  padding: 20px;
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   .star-detail-grid {
     grid-template-columns: 1fr;

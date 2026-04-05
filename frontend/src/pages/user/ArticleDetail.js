@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './ArticleDetail.css';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -36,7 +38,35 @@ const ArticleDetail = () => {
             <span>📅 {formatDate(article.createdAt)}</span>
             <span>👁 {article.views} قراءة</span>
           </div>
-          <img src={article.image || `https://picsum.photos/seed/${article._id}/800/450`} alt="" className="article-detail-image" />
+          {article.image && <img src={getFullImageUrl(article.image)} alt="" className="article-detail-image" />}
+          
+          {article.videoUrl && (
+            <div className="article-detail-video-wrapper">
+              {getEmbedUrl(article.videoUrl) ? (
+                <div className="video-responsive">
+                  <iframe
+                    src={getEmbedUrl(article.videoUrl)}
+                    title="Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : isDirectVideo(article.videoUrl) ? (
+                <video controls className="article-detail-direct-video">
+                  <source src={article.videoUrl} type={`video/${article.videoUrl.split('.').pop()}`} />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div className="article-detail-video-link">
+                  <a href={article.videoUrl} target="_blank" rel="noopener noreferrer" className="btn-red">
+                    مشاهدة الفيديو المصاحب 📺
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="article-detail-content">{article.contentAr}</div>
         </article>
         <aside>
@@ -44,7 +74,7 @@ const ArticleDetail = () => {
           {related.slice(0, 4).map(a => (
             <Link key={a._id} to={`/articles/${a._id}`} className="article-detail-related-link">
               <div className="article-detail-related-card">
-                <img src={a.image || `https://picsum.photos/seed/${a._id}/100/70`} alt="" className="article-detail-related-img" />
+                <img src={getFullImageUrl(a.image) || `https://picsum.photos/seed/${a._id}/80/50`} alt="" className="article-detail-related-img" />
                 <div>
                   <p className="article-detail-related-title">{a.titleAr}</p>
                   <p className="article-detail-related-date">{formatDate(a.createdAt)}</p>

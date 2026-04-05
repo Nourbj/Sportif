@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './StarsPage.css';
 
 const StarsPage = () => {
@@ -34,7 +35,7 @@ const StarsPage = () => {
             <Link key={s._id} to={`/stars/${s._id}`} className="stars-card-link">
               <div className="card stars-card">
                 {s.featured && <div className="stars-featured"><span className="stars-featured-badge">⭐ نجم</span></div>}
-                <img src={s.image || `https://picsum.photos/seed/${s._id}/200/200`} alt="" className="stars-avatar" />
+                {s.image && s.image.length > 5 && <img src={getFullImageUrl(s.image)} alt="" className="stars-avatar" />}
                 <h3 className="stars-name">{s.nameAr}</h3>
                 <p className="stars-sport">{s.sport}</p>
                 <p className="stars-nationality">{s.nationalityAr || s.nationality}</p>

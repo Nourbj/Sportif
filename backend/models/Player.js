@@ -17,6 +17,7 @@ const playerSchema = new mongoose.Schema({
     rating: { type: Number, default: 0 }
   },
   featured: { type: Boolean, default: false },
+  videoUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

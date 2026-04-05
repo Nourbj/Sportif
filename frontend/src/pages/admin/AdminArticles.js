@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './AdminArticles.css';
 
 const AdminArticles = () => {
@@ -9,8 +10,9 @@ const AdminArticles = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const empty = { titleAr: '', title: '', contentAr: '', content: '', type: 'analysis', image: '' };
+  const empty = { titleAr: '', title: '', contentAr: '', content: '', type: 'analysis', image: '', videoUrl: '' };
   const [form, setForm] = useState(empty);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const fetch = () => axios.get(`/api/articles?limit=${pageSize}&page=${page}`).then(r => {
     setArticles(r.data.articles);
@@ -22,14 +24,29 @@ const AdminArticles = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
-  const reset = () => { setForm(empty); setEditing(null); setShowForm(false); };
+  const reset = () => { 
+    setForm(empty); 
+    setSelectedFile(null);
+    setEditing(null); 
+    setShowForm(false); 
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editing) await axios.put(`/api/articles/${editing}`, form);
-    else await axios.post('/api/articles', form);
+    
+    const formData = new FormData();
+    Object.keys(form).forEach(key => {
+      formData.append(key, form[key]);
+    });
+    if (selectedFile) {
+      formData.append('image', selectedFile);
+    }
+
+    if (editing) await axios.put(`/api/articles/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    else await axios.post('/api/articles', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    
     reset(); fetch();
   };
-  const handleEdit = (a) => { setForm({ titleAr: a.titleAr, title: a.title || '', contentAr: a.contentAr, content: a.content || '', type: a.type, image: a.image || '' }); setEditing(a._id); setShowForm(true); };
+  const handleEdit = (a) => { setForm({ titleAr: a.titleAr, title: a.title || '', contentAr: a.contentAr, content: a.content || '', type: a.type, image: a.image || '', videoUrl: a.videoUrl || '' }); setEditing(a._id); setShowForm(true); };
   const handleDelete = async (id) => { if (window.confirm('حذف المقال؟')) { await axios.delete(`/api/articles/${id}`); fetch(); } };
 
   const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN');
@@ -60,8 +77,13 @@ const AdminArticles = () => {
                 <textarea className="admin-articles-input admin-articles-textarea" value={form.contentAr} onChange={e => setForm({...form, contentAr: e.target.value})} required />
               </div>
               <div className="admin-articles-span">
-                <label className="admin-articles-label">رابط الصورة</label>
-                <input className="admin-articles-input" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+                <label className="admin-articles-label">الصورة (تحميل ملف)</label>
+                <input type="file" className="admin-articles-input" onChange={e => setSelectedFile(e.target.files[0])} accept="image/*" />
+                {form.image && <div className="admin-articles-image-preview" style={{fontSize:'0.8rem', color:'#666', marginTop:'4px'}}>الصورة الحالية: {form.image.split('/').pop()}</div>}
+              </div>
+              <div className="admin-articles-span">
+                <label className="admin-articles-label">رابط الفيديو</label>
+                <input className="admin-articles-input" value={form.videoUrl} onChange={e => setForm({...form, videoUrl: e.target.value})} placeholder="https://..." />
               </div>
             </div>
             <div className="admin-articles-form-actions">
@@ -75,7 +97,7 @@ const AdminArticles = () => {
         <table className="admin-articles-table">
           <thead>
             <tr className="admin-articles-table-head">
-            {['الصورة', 'العنوان', 'النوع', 'القراءات', 'التاريخ', 'الإجراءات'].map(h => (
+            {['الصورة', 'العنوان', 'النوع', 'القراءات', 'فيديو', 'التاريخ', 'الإجراءات'].map(h => (
               <th key={h} className="admin-articles-th">{h}</th>
             ))}
             </tr>
@@ -84,7 +106,7 @@ const AdminArticles = () => {
             {articles.map(a => (
               <tr key={a._id} className="admin-articles-tr">
                 <td className="admin-articles-td">
-                  <img src={a.image || `https://picsum.photos/seed/${a._id}/70/44`} alt="" className="admin-articles-thumb" />
+                  <img src={getFullImageUrl(a.image) || `https://picsum.photos/seed/${a._id}/70/44`} alt="" className="admin-articles-thumb" />
                 </td>
                 <td className="admin-articles-td admin-articles-title-cell">
                   <div className="admin-articles-ellipsis">{a.titleAr}</div>
@@ -95,6 +117,7 @@ const AdminArticles = () => {
                   </span>
                 </td>
                 <td className="admin-articles-td admin-articles-muted">👁 {a.views}</td>
+                <td className="admin-articles-td">{a.videoUrl ? '📹' : '—'}</td>
                 <td className="admin-articles-td admin-articles-date">{formatDate(a.createdAt)}</td>
                 <td className="admin-articles-td">
                   <div className="admin-articles-actions">
@@ -112,7 +135,7 @@ const AdminArticles = () => {
         {articles.map(a => (
           <div key={a._id} className="admin-articles-card">
             <div className="admin-articles-card-head">
-              <img src={a.image || `https://picsum.photos/seed/${a._id}/120/80`} alt="" className="admin-articles-card-thumb" />
+              <img src={getFullImageUrl(a.image) || `https://picsum.photos/seed/${a._id}/120/80`} alt="" className="admin-articles-card-thumb" />
               <div className="admin-articles-card-info">
                 <div className="admin-articles-card-title">{a.titleAr}</div>
                 <div className="admin-articles-card-meta">

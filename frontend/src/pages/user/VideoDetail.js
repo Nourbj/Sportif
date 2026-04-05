@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './VideoDetail.css';
 
 const VideoDetail = () => {
@@ -44,7 +45,7 @@ const VideoDetail = () => {
             <Link key={v._id} to={`/videos/${v._id}`} className="video-detail-related-link">
               <div className="video-detail-related-card">
                 <div className="video-detail-related-thumb">
-                  <img src={v.thumbnail || `https://picsum.photos/seed/${v._id}/160/90`} alt="" className="video-detail-related-img" />
+                  {v.thumbnail && <img src={getFullImageUrl(v.thumbnail)} alt="" className="video-detail-related-img" />}
                   <div className="video-detail-related-play">
                     <div className="video-detail-related-play-icon">▶</div>
                   </div>

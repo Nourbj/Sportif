@@ -11,6 +11,7 @@ const matchSchema = new mongoose.Schema({
   competition: { type: String, required: true },
   status: { type: String, enum: ['upcoming', 'live', 'finished'], default: 'upcoming' },
   venue: { type: String, default: '' },
+  videoUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

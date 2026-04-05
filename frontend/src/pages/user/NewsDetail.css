@@ -63,6 +63,40 @@
   color: #333;
 }
 
+.news-detail-video-wrapper {
+  margin-bottom: 30px;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.news-detail-direct-video {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.news-detail-video-link {
+  padding: 20px;
+  text-align: center;
+}
+
 .news-detail-aside-title {
   border-right: 4px solid #CC0000;
   padding-right: 12px;

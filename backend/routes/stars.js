@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Star = require('../models/Star');
 const { protect, adminOnly } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 router.get('/', async (req, res) => {
   try {
@@ -32,16 +33,20 @@ router.get('/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.post('/', protect, adminOnly, async (req, res) => {
+router.post('/', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
-    const star = await Star.create(req.body);
+    const data = { ...req.body };
+    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    const star = await Star.create(data);
     res.status(201).json(star);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.put('/:id', protect, adminOnly, async (req, res) => {
+router.put('/:id', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
-    const star = await Star.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    const star = await Star.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(star);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

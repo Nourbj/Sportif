@@ -15,10 +15,10 @@
 }
 
 .admin-stars-form-card {
-  background: white;
+  background: #FFFFFF;
   padding: 28px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 30px;
 }
 
@@ -83,11 +83,11 @@
 }
 
 .admin-stars-card {
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .admin-stars-avatar {

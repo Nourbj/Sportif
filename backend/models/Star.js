@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const starSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   nameAr: { type: String, required: true },
   sport: { type: String, required: true },
-  nationality: { type: String, required: true },
+  nationality: { type: String },
   nationalityAr: { type: String },
   club: { type: String },
   clubAr: { type: String },
@@ -13,6 +13,7 @@ const starSchema = new mongoose.Schema({
   bioAr: { type: String },
   stats: { type: Object, default: {} },
   featured: { type: Boolean, default: false },
+  videoUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 
