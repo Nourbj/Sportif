@@ -3,6 +3,8 @@ import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminStars.css';
+import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminPagination from '../../components/admin/AdminPagination';
 
 const AdminStars = () => {
   const [stars, setStars] = useState([]);
@@ -10,7 +12,8 @@ const AdminStars = () => {
   const [editing, setEditing] = useState(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const empty = { nameAr: '', name: '', sport: 'Football', position: '', age: '', nationality: '', nationalityAr: '', nationalityFlag: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', videoUrl: '', featured: false };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,6 +24,7 @@ const AdminStars = () => {
   const fetch = () => axios.get(`/api/stars?limit=${pageSize}&page=${page}`).then(r => {
     setStars(r.data.stars || []);
     setPages(r.data.pages || 1);
+    setTotal(r.data.total || 0);
   });
   useEffect(() => { fetch(); }, [page, pageSize]);
 
@@ -89,10 +93,11 @@ const AdminStars = () => {
 
   return (
     <div className="admin-stars">
-      <div className="admin-stars-header">
-        <h1 className="admin-stars-title">إدارة النجوم</h1>
-        <button onClick={() => { reset(); setShowForm(true); }} className="btn-red">+ إضافة نجم</button>
-      </div>
+      <AdminPageHeader
+        title="إدارة النجوم"
+        subtitle={`إجمالي: ${total} نجم`}
+        action={<button onClick={() => { reset(); setShowForm(true); }} className="btn-red">+ إضافة نجم</button>}
+      />
       {showForm && (
         <div className="admin-stars-form-card">
           <h3 className="admin-stars-form-title">{editing ? 'تعديل' : 'إضافة نجم'}</h3>
@@ -262,47 +267,13 @@ const AdminStars = () => {
         ))}
       </div>
 
-      <div className="admin-stars-pagination">
-        <div className="admin-stars-page-size">
-          <span>عدد الأسطر:</span>
-          <select
-            className="admin-stars-page-select"
-            value={pageSize}
-            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
-          >
-            {[6, 12, 24, 36].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="admin-stars-page-btn"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          السابق
-        </button>
-        <div className="admin-stars-page-list">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
-            <button
-              key={n}
-              className={`admin-stars-page-number${n === page ? ' is-active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
-          {pages > 7 && <span className="admin-stars-page-ellipsis">…</span>}
-        </div>
-        <span className="admin-stars-page-info">صفحة {page} من {pages}</span>
-        <button
-          className="admin-stars-page-btn"
-          onClick={() => setPage(p => Math.min(pages, p + 1))}
-          disabled={page === pages}
-        >
-          التالي
-        </button>
-      </div>
+      <AdminPagination
+        page={page}
+        pages={pages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setPage(1); setPageSize(n); }}
+      />
     </div>
   );
 };

@@ -1,0 +1,96 @@
+.admin-feedback {
+  width: 100%;
+}
+
+.admin-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-feedback-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.admin-feedback-table-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.admin-feedback-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-feedback-table-head {
+  background: #f8f8f8;
+}
+
+.admin-feedback-th,
+.admin-feedback-td {
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.admin-feedback-comment {
+  text-align: right;
+}
+
+.admin-feedback-empty {
+  text-align: center;
+  padding: 24px;
+  color: #777;
+}
+
+.admin-feedback-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-feedback-page-btn {
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #333;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-feedback-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-feedback-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-feedback-page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #555;
+}
+
+.admin-feedback-page-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}

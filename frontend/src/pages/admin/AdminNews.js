@@ -3,6 +3,8 @@ import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminNews.css';
+import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminPagination from '../../components/admin/AdminPagination';
 
 const AdminNews = () => {
   const [news, setNews] = useState([]);
@@ -11,7 +13,8 @@ const AdminNews = () => {
   const [editing, setEditing] = useState(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const [form, setForm] = useState({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false });
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState('');
@@ -24,6 +27,7 @@ const AdminNews = () => {
       .then(r => {
         setNews(r.data.news);
         setPages(r.data.pages || 1);
+        setTotal(r.data.total || 0);
       })
       .finally(() => setLoading(false));
   };
@@ -96,10 +100,11 @@ const AdminNews = () => {
 
   return (
     <div className="admin-news">
-      <div className="admin-news-header">
-        <h1 className="admin-news-title">إدارة الأخبار</h1>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="btn-red">+ إضافة خبر</button>
-      </div>
+      <AdminPageHeader
+        title="إدارة الأخبار"
+        subtitle={`إجمالي: ${total} خبر`}
+        action={<button onClick={() => { resetForm(); setShowForm(true); }} className="btn-red">+ إضافة خبر</button>}
+      />
 
       {showForm && (
         <div className="admin-news-form-card">
@@ -282,47 +287,13 @@ const AdminNews = () => {
         ))}
       </div>
 
-      <div className="admin-news-pagination">
-        <div className="admin-news-page-size">
-          <span>عدد الأسطر:</span>
-          <select
-            className="admin-news-page-select"
-            value={pageSize}
-            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
-          >
-            {[5, 10, 20, 30].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="admin-news-page-btn"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          السابق
-        </button>
-        <div className="admin-news-page-list">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
-            <button
-              key={n}
-              className={`admin-news-page-number${n === page ? ' is-active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
-          {pages > 7 && <span className="admin-news-page-ellipsis">…</span>}
-        </div>
-        <span className="admin-news-page-info">صفحة {page} من {pages}</span>
-        <button
-          className="admin-news-page-btn"
-          onClick={() => setPage(p => Math.min(pages, p + 1))}
-          disabled={page === pages}
-        >
-          التالي
-        </button>
-      </div>
+      <AdminPagination
+        page={page}
+        pages={pages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setPage(1); setPageSize(n); }}
+      />
     </div>
   );
 };

@@ -58,6 +58,7 @@ app.use('/api/matches', require('./routes/matches'));
 app.use('/api/videos', require('./routes/videos'));
 app.use('/api/stars', require('./routes/stars'));
 app.use('/api/articles', require('./routes/articles'));
+app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Connect to MongoDB

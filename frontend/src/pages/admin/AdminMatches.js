@@ -3,6 +3,8 @@ import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminMatches.css';
+import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminPagination from '../../components/admin/AdminPagination';
 
 const AdminMatches = () => {
   const [matches, setMatches] = useState([]);
@@ -10,7 +12,8 @@ const AdminMatches = () => {
   const [editing, setEditing] = useState(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const emptyForm = { homeTeam: '', awayTeam: '', homeTeamLogo: '', awayTeamLogo: '', date: '', competition: '', status: 'upcoming', homeScore: '', awayScore: '', venue: '', videoUrl: '' };
   const [form, setForm] = useState(emptyForm);
   const [homeFile, setHomeFile] = useState(null);
@@ -23,6 +26,7 @@ const AdminMatches = () => {
   const fetchMatches = () => axios.get(`/api/matches?limit=${pageSize}&page=${page}`).then(r => {
     setMatches(r.data.matches || []);
     setPages(r.data.pages || 1);
+    setTotal(r.data.total || 0);
   });
   useEffect(() => { fetchMatches(); }, [page, pageSize]);
 
@@ -96,10 +100,11 @@ const AdminMatches = () => {
 
   return (
     <div className="admin-matches">
-      <div className="admin-matches-header">
-        <h1 className="admin-matches-title">إدارة المباريات</h1>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="btn-red">+ إضافة مباراة</button>
-      </div>
+      <AdminPageHeader
+        title="إدارة المباريات"
+        subtitle={`إجمالي: ${total} مباراة`}
+        action={<button onClick={() => { resetForm(); setShowForm(true); }} className="btn-red">+ إضافة مباراة</button>}
+      />
       {showForm && (
         <div className="admin-matches-form-card">
           <h3 className="admin-matches-form-title">{editing ? 'تعديل مباراة' : 'إضافة مباراة'}</h3>
@@ -324,47 +329,13 @@ const AdminMatches = () => {
         ))}
       </div>
 
-      <div className="admin-matches-pagination">
-        <div className="admin-matches-page-size">
-          <span>عدد الأسطر:</span>
-          <select
-            className="admin-matches-page-select"
-            value={pageSize}
-            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
-          >
-            {[5, 10, 20, 30].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="admin-matches-page-btn"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          السابق
-        </button>
-        <div className="admin-matches-page-list">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
-            <button
-              key={n}
-              className={`admin-matches-page-number${n === page ? ' is-active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
-          {pages > 7 && <span className="admin-matches-page-ellipsis">…</span>}
-        </div>
-        <span className="admin-matches-page-info">صفحة {page} من {pages}</span>
-        <button
-          className="admin-matches-page-btn"
-          onClick={() => setPage(p => Math.min(pages, p + 1))}
-          disabled={page === pages}
-        >
-          التالي
-        </button>
-      </div>
+      <AdminPagination
+        page={page}
+        pages={pages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setPage(1); setPageSize(n); }}
+      />
     </div>
   );
 };

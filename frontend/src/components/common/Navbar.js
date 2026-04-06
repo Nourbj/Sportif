@@ -40,6 +40,7 @@ const Navbar = () => {
             { to: '/videos', label: 'فيديوهات' },
             { to: '/stars', label: 'نجوم' },
             { to: '/articles', label: 'مقالات و تحليلات' },
+            { to: '/feedback', label: 'آراؤكم' },
           ].map(item => (
             <NavLink
               key={item.to}
@@ -78,6 +79,7 @@ const Navbar = () => {
             { to: '/videos', label: 'فيديوهات' },
             { to: '/stars', label: 'نجوم' },
             { to: '/articles', label: 'مقالات و تحليلات' },
+            { to: '/feedback', label: 'آراؤكم' },
           ].map(item => (
             <NavLink
               key={item.to}

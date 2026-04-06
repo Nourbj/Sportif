@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AdminUsers.css';
+import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminPagination from '../../components/admin/AdminPagination';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
 
   const fetch = () => axios.get(`/api/admin/users?limit=${pageSize}&page=${page}`).then(r => {
@@ -29,10 +31,10 @@ const AdminUsers = () => {
 
   return (
     <div className="admin-users">
-      <div className="admin-users-header">
-        <h1 className="admin-users-title">إدارة المستخدمين</h1>
-        <p className="admin-users-subtitle">إجمالي: {total} مستخدم</p>
-      </div>
+      <AdminPageHeader
+        title="إدارة المستخدمين"
+        subtitle={`إجمالي: ${total} مستخدم`}
+      />
       <div className="admin-users-table-card">
         <table className="admin-users-table">
           <thead>
@@ -102,47 +104,13 @@ const AdminUsers = () => {
         ))}
       </div>
 
-      <div className="admin-users-pagination">
-        <div className="admin-users-page-size">
-          <span>عدد الأسطر:</span>
-          <select
-            className="admin-users-page-select"
-            value={pageSize}
-            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
-          >
-            {[5, 10, 20, 30].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="admin-users-page-btn"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          السابق
-        </button>
-        <div className="admin-users-page-list">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
-            <button
-              key={n}
-              className={`admin-users-page-number${n === page ? ' is-active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
-          {pages > 7 && <span className="admin-users-page-ellipsis">…</span>}
-        </div>
-        <span className="admin-users-page-info">صفحة {page} من {pages}</span>
-        <button
-          className="admin-users-page-btn"
-          onClick={() => setPage(p => Math.min(pages, p + 1))}
-          disabled={page === pages}
-        >
-          التالي
-        </button>
-      </div>
+      <AdminPagination
+        page={page}
+        pages={pages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setPage(1); setPageSize(n); }}
+      />
     </div>
   );
 };

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminArticles.css';
+import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminPagination from '../../components/admin/AdminPagination';
 
 const AdminArticles = () => {
   const [articles, setArticles] = useState([]);
@@ -10,7 +12,8 @@ const AdminArticles = () => {
   const [editing, setEditing] = useState(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const empty = { titleAr: '', title: '', contentAr: '', content: '', type: 'analysis', image: '', videoUrl: '' };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,6 +24,7 @@ const AdminArticles = () => {
   const fetch = () => axios.get(`/api/articles?limit=${pageSize}&page=${page}`).then(r => {
     setArticles(r.data.articles);
     setPages(r.data.pages || 1);
+    setTotal(r.data.total || 0);
   });
   useEffect(() => { fetch(); }, [page, pageSize]);
 
@@ -82,10 +86,11 @@ const AdminArticles = () => {
 
   return (
     <div className="admin-articles">
-      <div className="admin-articles-header">
-        <h1 className="admin-articles-title">إدارة المقالات</h1>
-        <button onClick={() => { reset(); setShowForm(true); }} className="btn-red">+ إضافة مقال</button>
-      </div>
+      <AdminPageHeader
+        title="إدارة المقالات"
+        subtitle={`إجمالي: ${total} مقال`}
+        action={<button onClick={() => { reset(); setShowForm(true); }} className="btn-red">+ إضافة مقال</button>}
+      />
       {showForm && (
         <div className="admin-articles-form-card">
           <h3 className="admin-articles-form-title">{editing ? 'تعديل مقال' : 'إضافة مقال'}</h3>
@@ -254,47 +259,13 @@ const AdminArticles = () => {
         ))}
       </div>
 
-      <div className="admin-articles-pagination">
-        <div className="admin-articles-page-size">
-          <span>عدد الأسطر:</span>
-          <select
-            className="admin-articles-page-select"
-            value={pageSize}
-            onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
-          >
-            {[5, 10, 20, 30].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="admin-articles-page-btn"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          السابق
-        </button>
-        <div className="admin-articles-page-list">
-          {Array.from({ length: pages }, (_, i) => i + 1).slice(0, 7).map(n => (
-            <button
-              key={n}
-              className={`admin-articles-page-number${n === page ? ' is-active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
-          {pages > 7 && <span className="admin-articles-page-ellipsis">…</span>}
-        </div>
-        <span className="admin-articles-page-info">صفحة {page} من {pages}</span>
-        <button
-          className="admin-articles-page-btn"
-          onClick={() => setPage(p => Math.min(pages, p + 1))}
-          disabled={page === pages}
-        >
-          التالي
-        </button>
-      </div>
+      <AdminPagination
+        page={page}
+        pages={pages}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setPage(1); setPageSize(n); }}
+      />
     </div>
   );
 };
