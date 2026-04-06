@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './ArticlesPage.css';
@@ -7,12 +7,18 @@ import './ArticlesPage.css';
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 
 const ArticlesPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const initialType = searchParams.get('type') || '';
+  const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const initialPageSize = parseInt(searchParams.get('limit') || '3', 10);
   const [articles, setArticles] = useState([]);
-  const [type, setType] = useState('');
-  const [page, setPage] = useState(1);
+  const [type, setType] = useState(initialType);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState([3, 6, 9, 12].includes(initialPageSize) ? initialPageSize : 3);
   const [loading, setLoading] = useState(true);
+  const hasLoaded = useRef(false);
 
   const types = [{ val: '', label: 'الكل' }, { val: 'analysis', label: 'تحليلات' }, { val: 'opinion', label: 'آراء' }, { val: 'report', label: 'تقارير' }];
   const pageSizes = [3, 6, 9, 12];
@@ -38,13 +44,19 @@ const ArticlesPage = () => {
   useEffect(() => {
     setLoading(true);
     axios.get(`/api/articles?page=${page}&limit=${pageSize}${type ? `&type=${type}` : ''}`)
-      .then(r => { setArticles(r.data.articles); setTotalPages(r.data.pages || 1); })
+      .then(r => { setArticles(r.data.articles); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [page, type, pageSize]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(1);
+    if (hasLoaded.current && page > totalPages) setPage(totalPages);
   }, [totalPages, page]);
+
+  useEffect(() => {
+    const params = { page: String(page), limit: String(pageSize) };
+    if (type) params.type = type;
+    setSearchParams(params, { replace: true });
+  }, [page, pageSize, type, setSearchParams]);
 
   return (
     <div className="container articles-page">
@@ -74,7 +86,7 @@ const ArticlesPage = () => {
         <>
           <div className="grid-3 articles-grid">
             {articles.map(a => (
-              <Link key={a._id} to={`/articles/${a._id}`} className="articles-card-link">
+              <Link key={a._id} to={`/articles/${a._id}${location.search}`} className="articles-card-link">
                 <div className="card">
                   <img src={a.image && a.image.length > 5 ? getFullImageUrl(a.image) : '/images/placeholder.png'} alt="" className="articles-card-img" />
                   <div className="articles-card-body">

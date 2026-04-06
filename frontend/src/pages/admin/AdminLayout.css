@@ -81,14 +81,14 @@
 }
 
 .admin-sidebar-nav {
-  padding: 16px 0;
+  padding: 5px 0;
 }
 
 .admin-sidebar-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 8px 20px;
   color: #888;
   background: transparent;
   font-weight: 400;

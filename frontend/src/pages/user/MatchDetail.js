@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getEmbedUrl, isDirectVideo, getFullVideoUrl } from '../../utils/videoUtils';
 import { getFullImageUrl } from '../../utils/imageUtils';
@@ -30,6 +30,7 @@ const TeamLogo = ({ logo, teamName }) => {
 
 const MatchDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [match, setMatch] = useState(null);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const MatchDetail = () => {
 
   return (
     <div className="container match-detail">
-      <Link to="/matches" className="match-detail-back">العودة للمباريات ←</Link>
+      <Link to={`/matches${location.search || ''}`} className="match-detail-back">العودة للمباريات ←</Link>
       <div className="match-detail-grid">
         <article>
           <div className="card match-detail-card">

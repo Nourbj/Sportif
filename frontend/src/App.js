@@ -19,6 +19,7 @@ import ArticlesPage from './pages/user/ArticlesPage';
 import ArticleDetail from './pages/user/ArticleDetail';
 import Login from './pages/user/Login';
 import Register from './pages/user/Register';
+import Profile from './pages/user/Profile';
 
 // Admin pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -29,6 +30,7 @@ import AdminVideos from './pages/admin/AdminVideos';
 import AdminStars from './pages/admin/AdminStars';
 import AdminArticles from './pages/admin/AdminArticles';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminProfile from './pages/admin/AdminProfile';
 
 const PublicLayout = ({ children }) => (
   <div className="app-shell">
@@ -57,6 +59,7 @@ function App() {
           <Route path="/stars/:id" element={<PublicLayout><StarDetail /></PublicLayout>} />
           <Route path="/articles" element={<PublicLayout><ArticlesPage /></PublicLayout>} />
           <Route path="/articles/:id" element={<PublicLayout><ArticleDetail /></PublicLayout>} />
+          <Route path="/profile" element={<PublicLayout><Profile /></PublicLayout>} />
           <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
           <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
 
@@ -69,6 +72,7 @@ function App() {
             <Route path="stars" element={<AdminStars />} />
             <Route path="articles" element={<AdminArticles />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="profile" element={<AdminProfile />} />
           </Route>
         </Routes>
       </BrowserRouter>

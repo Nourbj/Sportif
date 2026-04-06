@@ -57,6 +57,7 @@ const Navbar = () => {
           {user ? (
             <>
               {user.role === 'admin' && <Link to="/admin" className="navbar-btn navbar-admin" onClick={closeMenu}>لوحة التحكم</Link>}
+              <Link to="/profile" className="navbar-btn navbar-btn-outline" onClick={closeMenu}>الملف الشخصي</Link>
               <span className="navbar-user">مرحباً، {user.name}</span>
               <button onClick={handleLogout} className="navbar-btn navbar-btn-outline">خروج</button>
             </>
@@ -93,6 +94,7 @@ const Navbar = () => {
           {user ? (
             <>
               {user.role === 'admin' && <Link to="/admin" className="navbar-mobile-btn primary" onClick={closeMenu}>لوحة التحكم</Link>}
+              <Link to="/profile" className="navbar-mobile-btn outline" onClick={closeMenu}>الملف الشخصي</Link>
               <span className="navbar-mobile-user">مرحباً، {user.name}</span>
               <button onClick={() => { handleLogout(); closeMenu(); }} className="navbar-mobile-btn outline">خروج</button>
             </>

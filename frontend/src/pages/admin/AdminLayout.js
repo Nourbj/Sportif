@@ -19,6 +19,7 @@ const AdminLayout = () => {
     { to: '/admin/stars', icon: '⭐', label: 'النجوم' },
     { to: '/admin/articles', icon: '✍', label: 'المقالات' },
     { to: '/admin/users', icon: '👥', label: 'المستخدمون' },
+    { to: '/admin/profile', icon: '👤', label: 'الملف الشخصي' },
   ];
 
   return (

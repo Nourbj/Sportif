@@ -6,6 +6,36 @@ import { getFullImageUrl } from '../../utils/imageUtils';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
+const categoryLabels = {
+  football: 'كرة القدم',
+  basketball: 'كرة السلة',
+  tennis: 'التنس',
+  local: 'محلي',
+  international: 'دولي',
+  other: 'أخرى'
+};
+const sportLabels = {
+  Football: 'كرة القدم',
+  Tennis: 'التنس',
+  Basketball: 'كرة السلة',
+  Athletics: 'ألعاب القوى',
+  Swimming: 'السباحة',
+  Other: 'أخرى'
+};
+const positionLabels = {
+  'Attacking Midfielder': 'صانع ألعاب',
+  'Defensive Midfielder': 'وسط دفاعي',
+  'Central Midfielder': 'وسط مركزي',
+  'Midfielder': 'وسط ميدان',
+  'Center Back': 'قلب دفاع',
+  'Right Back': 'ظهير أيمن',
+  'Left Back': 'ظهير أيسر',
+  'Striker': 'مهاجم',
+  'Forward': 'مهاجم',
+  'Goalkeeper': 'حارس مرمى',
+  'Tennis Player': 'لاعب تنس',
+  'Swimmer': 'سبّاح'
+};
 
 const TeamLogo = ({ logo, teamName }) => {
   const [imgError, setImgError] = useState(false);
@@ -66,7 +96,7 @@ const Home = () => {
                   <div className="card featured-main-card">
                     <img src={featured[0].image ? getFullImageUrl(featured[0].image) : '/images/placeholder.png'} alt="" className="featured-main-img" />
                     <div className="featured-main-overlay">
-                      <span className="badge badge-red featured-main-badge">{featured[0].category}</span>
+                      <span className="badge badge-red featured-main-badge">{categoryLabels[featured[0].category] || featured[0].category}</span>
                       <h3 className="featured-main-title">{featured[0].titleAr}</h3>
                       <p className="featured-main-meta">👁 {featured[0].views} • {formatDate(featured[0].createdAt)}</p>
                     </div>
@@ -150,7 +180,7 @@ const Home = () => {
                     <img src={typeof n.image === 'string' && n.image.length > 5 ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="home-card-img" />
                     <div className="news-card-body">
                       <div className="news-card-meta">
-                        <span className="badge badge-red news-card-badge">{n.category}</span>
+                        <span className="badge badge-red news-card-badge">{categoryLabels[n.category] || n.category}</span>
                         <span className="news-card-date">{formatDate(n.createdAt)}</span>
                       </div>
                       <h3 className="news-card-title">{n.titleAr}</h3>
@@ -204,8 +234,11 @@ const Home = () => {
                   <div className="card home-star-card">
                     <img src={s.image ? getFullImageUrl(s.image) : '/images/placeholder.png'} alt="" className="home-star-img" />
                     <h4 className="home-star-name">{s.nameAr}</h4>
-                    <p className="home-star-sport">{s.sport}</p>
-                    <p className="home-star-nationality">{s.nationalityAr || s.nationality}</p>
+                    <p className="home-star-sport">{sportLabels[s.sport] || 'أخرى'}</p>
+                    {s.position && <p className="home-star-position">{positionLabels[s.position] || s.position}</p>}
+                    {s.age ? <p className="home-star-age">العمر: {s.age}</p> : null}
+                    <p className="home-star-nationality">{`${s.nationalityFlag ? `${s.nationalityFlag} ` : ''}${s.nationalityAr || ''}`}</p>
+                    {s.clubAr && <p className="home-star-club">{s.clubAr}</p>}
                   </div>
                 </Link>
               ))}

@@ -104,7 +104,19 @@ const AdminVideos = () => {
                 <label className="admin-videos-label">العنوان</label>
                 <input className="admin-videos-input" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
               </div>
+              <div>
+                <label className="admin-videos-label">التصنيف</label>
+                <select className="admin-videos-input" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
+                  {Object.entries(categoryLabels).map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
               <div className="admin-videos-span">
+                <label className="admin-videos-label">الوصف بالعربية</label>
+                <textarea className="admin-videos-input admin-videos-textarea" value={form.descriptionAr} onChange={e => setForm({...form, descriptionAr: e.target.value})} />
+              </div>
+              <div className="admin-videos-media">
                 <label className="admin-videos-label">الفيديو (تحميل ملف)</label>
                 <label className="admin-image-upload-box">
                   <input
@@ -151,7 +163,7 @@ const AdminVideos = () => {
                   </div>
                 )}
               </div>
-              <div>
+              <div className="admin-videos-media">
                 <label className="admin-videos-label">الصورة المصغرة (تحميل ملف)</label>
                 <label className="admin-image-upload-box">
                   <input
@@ -183,18 +195,6 @@ const AdminVideos = () => {
                     </button>
                   </div>
                 )}
-              </div>
-              <div>
-                <label className="admin-videos-label">التصنيف</label>
-                <select className="admin-videos-input" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
-                  {Object.entries(categoryLabels).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="admin-videos-span">
-                <label className="admin-videos-label">الوصف بالعربية</label>
-                <textarea className="admin-videos-input admin-videos-textarea" value={form.descriptionAr} onChange={e => setForm({...form, descriptionAr: e.target.value})} />
               </div>
             </div>
             <div className="admin-videos-form-actions">

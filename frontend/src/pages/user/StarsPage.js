@@ -1,18 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './StarsPage.css';
 
 const StarsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const initialSport = searchParams.get('sport') || '';
+  const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const initialPageSize = parseInt(searchParams.get('limit') || '4', 10);
   const [stars, setStars] = useState([]);
-  const [sport, setSport] = useState('');
-  const [page, setPage] = useState(1);
+  const [sport, setSport] = useState(initialSport);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(4);
+  const hasLoaded = useRef(false);
+  const [pageSize, setPageSize] = useState([4, 8, 12, 16].includes(initialPageSize) ? initialPageSize : 4);
   const [loading, setLoading] = useState(true);
 
-  const sports = [{ val: '', label: 'الكل' }, { val: 'Football', label: 'كرة القدم' }, { val: 'Tennis', label: 'التنس' }, { val: 'Basketball', label: 'كرة السلة' }];
+  const sports = [
+    { val: '', label: 'الكل' },
+    { val: 'Football', label: 'كرة القدم' },
+    { val: 'Tennis', label: 'التنس' },
+    { val: 'Basketball', label: 'كرة السلة' },
+    { val: 'Athletics', label: 'ألعاب القوى' },
+    { val: 'Swimming', label: 'السباحة' },
+    { val: 'Other', label: 'أخرى' }
+  ];
+  const sportLabels = {
+    Football: 'كرة القدم',
+    Tennis: 'التنس',
+    Basketball: 'كرة السلة',
+    Athletics: 'ألعاب القوى',
+    Swimming: 'السباحة',
+    Other: 'أخرى'
+  };
+  const positionLabels = {
+    'Attacking Midfielder': 'صانع ألعاب',
+    'Defensive Midfielder': 'وسط دفاعي',
+    'Central Midfielder': 'وسط مركزي',
+    'Midfielder': 'وسط ميدان',
+    'Center Back': 'قلب دفاع',
+    'Right Back': 'ظهير أيمن',
+    'Left Back': 'ظهير أيسر',
+    'Striker': 'مهاجم',
+    'Forward': 'مهاجم',
+    'Goalkeeper': 'حارس مرمى',
+    'Tennis Player': 'لاعب تنس',
+    'Swimmer': 'سبّاح'
+  };
   const pageSizes = [4, 8, 12, 16];
 
   const getPageItems = (current, total) => {
@@ -36,13 +72,19 @@ const StarsPage = () => {
   useEffect(() => {
     setLoading(true);
     axios.get(`/api/stars?page=${page}&limit=${pageSize}${sport ? `&sport=${sport}` : ''}`)
-      .then(r => { setStars(r.data.stars || []); setTotalPages(r.data.pages || 1); })
+      .then(r => { setStars(r.data.stars || []); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [sport, page, pageSize]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(1);
+    if (hasLoaded.current && page > totalPages) setPage(totalPages);
   }, [totalPages, page]);
+
+  useEffect(() => {
+    const params = { page: String(page), limit: String(pageSize) };
+    if (sport) params.sport = sport;
+    setSearchParams(params, { replace: true });
+  }, [sport, page, pageSize, setSearchParams]);
 
   return (
     <div className="container stars-page">
@@ -72,7 +114,7 @@ const StarsPage = () => {
         <>
           <div className="grid-4">
             {stars.map(s => (
-              <Link key={s._id} to={`/stars/${s._id}`} className="stars-card-link">
+              <Link key={s._id} to={`/stars/${s._id}${location.search}`} className="stars-card-link">
                 <div className="card stars-card">
                 {s.featured && (
                   <div className="stars-featured">
@@ -85,8 +127,10 @@ const StarsPage = () => {
                 )}
                   <img src={s.image && s.image.length > 5 ? getFullImageUrl(s.image) : '/images/placeholder.png'} alt="" className="stars-avatar" />
                   <h3 className="stars-name">{s.nameAr}</h3>
-                  <p className="stars-sport">{s.sport}</p>
-                  <p className="stars-nationality">{s.nationalityAr || s.nationality}</p>
+                  <p className="stars-sport">{sportLabels[s.sport] || 'أخرى'}</p>
+                  {s.position && <p className="stars-position">{positionLabels[s.position] || s.position}</p>}
+                  {s.age ? <p className="stars-age">العمر: {s.age}</p> : null}
+                  <p className="stars-nationality">{`${s.nationalityFlag ? `${s.nationalityFlag} ` : ''}${s.nationalityAr || ''}`}</p>
                   {s.clubAr && <p className="stars-club">{s.clubAr}</p>}
                 </div>
               </Link>

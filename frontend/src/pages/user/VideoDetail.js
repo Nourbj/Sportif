@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
@@ -7,6 +7,7 @@ import './VideoDetail.css';
 
 const VideoDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [video, setVideo] = useState(null);
   const [related, setRelated] = useState([]);
 
@@ -36,7 +37,7 @@ const VideoDetail = () => {
 
   return (
     <div className="container video-detail">
-      <Link to="/videos" className="video-detail-back">العودة للفيديوهات ←</Link>
+      <Link to={`/videos${location.search || ''}`} className="video-detail-back">العودة للفيديوهات ←</Link>
       <div className="video-detail-grid">
         <div>
           <div className="video-detail-player">

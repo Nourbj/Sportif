@@ -147,4 +147,59 @@ router.get('/me', protect, (req, res) => {
   res.json(req.user);
 });
 
+/**
+ * @swagger
+ * /api/auth/me:
+ *   put:
+ *     summary: Update current user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated user
+ */
+router.put('/me', protect, async (req, res) => {
+  try {
+    const { name, email, currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (email && email !== user.email) {
+      const exists = await User.findOne({ email });
+      if (exists) return res.status(400).json({ message: 'Email already exists' });
+      user.email = email;
+    }
+
+    if (name) user.name = name;
+
+    if (newPassword) {
+      if (!currentPassword) return res.status(400).json({ message: 'Current password required' });
+      const ok = await user.comparePassword(currentPassword);
+      if (!ok) return res.status(401).json({ message: 'Current password is incorrect' });
+      user.password = newPassword;
+    }
+
+    await user.save();
+    res.json({ id: user._id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

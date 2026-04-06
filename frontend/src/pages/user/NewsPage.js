@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './NewsPage.css';
@@ -7,12 +7,18 @@ import './NewsPage.css';
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 
 const NewsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const initialCategory = searchParams.get('category') || '';
+  const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const initialPageSize = parseInt(searchParams.get('limit') || '3', 10);
   const [news, setNews] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
-  const [category, setCategory] = useState('');
+  const [pageSize, setPageSize] = useState([3, 6, 9, 12].includes(initialPageSize) ? initialPageSize : 3);
+  const [category, setCategory] = useState(initialCategory);
   const [loading, setLoading] = useState(true);
+  const hasLoaded = useRef(false);
 
   const cats = [{ val: '', label: 'الكل' }, { val: 'football', label: 'كرة القدم' }, { val: 'basketball', label: 'كرة السلة' }, { val: 'tennis', label: 'التنس' }, { val: 'local', label: 'محلي' }, { val: 'international', label: 'دولي' }];
   const categoryLabels = cats.reduce((acc, c) => {
@@ -42,13 +48,19 @@ const NewsPage = () => {
   useEffect(() => {
     setLoading(true);
     axios.get(`/api/news?page=${page}&limit=${pageSize}${category ? `&category=${category}` : ''}`)
-      .then(r => { setNews(r.data.news); setTotalPages(r.data.pages || 1); })
+      .then(r => { setNews(r.data.news); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [page, category, pageSize]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(1);
+    if (hasLoaded.current && page > totalPages) setPage(totalPages);
   }, [totalPages, page]);
+
+  useEffect(() => {
+    const params = { page: String(page), limit: String(pageSize) };
+    if (category) params.category = category;
+    setSearchParams(params, { replace: true });
+  }, [page, pageSize, category, setSearchParams]);
 
   return (
     <div className="container news-page">
@@ -82,7 +94,7 @@ const NewsPage = () => {
         <>
           <div className="grid-3 news-grid">
             {news.map(n => (
-              <Link key={n._id} to={`/news/${n._id}`} className="news-card-link">
+              <Link key={n._id} to={`/news/${n._id}${location.search}`} className="news-card-link">
                 <div className="card">
                   <img src={n.image && n.image.length > 5 ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="news-card-img" />
                   <div className="news-card-body">

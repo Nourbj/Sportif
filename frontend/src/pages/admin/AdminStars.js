@@ -11,7 +11,7 @@ const AdminStars = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [pageSize, setPageSize] = useState(12);
-  const empty = { nameAr: '', name: '', sport: 'Football', nationality: '', nationalityAr: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', videoUrl: '', featured: false };
+  const empty = { nameAr: '', name: '', sport: 'Football', position: '', age: '', nationality: '', nationalityAr: '', nationalityFlag: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', videoUrl: '', featured: false };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState('');
@@ -69,7 +69,7 @@ const AdminStars = () => {
     reset(); fetch();
   };
   const handleEdit = (s) => { 
-    setForm({ nameAr: s.nameAr, name: s.name || '', sport: s.sport, nationality: s.nationality, nationalityAr: s.nationalityAr || '', club: s.club || '', clubAr: s.clubAr || '', image: s.image || '', bioAr: s.bioAr || '', bio: s.bio || '', videoUrl: s.videoUrl || '', featured: s.featured });
+    setForm({ nameAr: s.nameAr, name: s.name || '', sport: s.sport, position: s.position || '', age: s.age || '', nationality: s.nationality || '', nationalityAr: s.nationalityAr || '', nationalityFlag: s.nationalityFlag || '', club: s.club || '', clubAr: s.clubAr || '', image: s.image || '', bioAr: s.bioAr || '', bio: s.bio || '', videoUrl: s.videoUrl || '', featured: s.featured });
     setSelectedFile(null);
     setSelectedVideoFile(null);
     setEditing(s._id); 
@@ -122,8 +122,28 @@ const AdminStars = () => {
                 </select>
               </div>
               <div>
+                <label className="admin-stars-label">المركز</label>
+                <input className="admin-stars-input" value={form.position} onChange={e => setForm({...form, position: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-stars-label">العمر</label>
+                <input className="admin-stars-input" type="number" value={form.age} onChange={e => setForm({...form, age: e.target.value})} min="0" />
+              </div>
+              <div>
+                <label className="admin-stars-label">العلم</label>
+                <input className="admin-stars-input" value={form.nationalityFlag} onChange={e => setForm({...form, nationalityFlag: e.target.value})} placeholder="🇹🇳" />
+              </div>
+              <div>
                 <label className="admin-stars-label">الجنسية</label>
                 <input className="admin-stars-input" value={form.nationalityAr} onChange={e => setForm({...form, nationalityAr: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-stars-label">الجنسية بالإنجليزية</label>
+                <input className="admin-stars-input" value={form.nationality} onChange={e => setForm({...form, nationality: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-stars-label">النادي بالإنجليزية</label>
+                <input className="admin-stars-input" value={form.club} onChange={e => setForm({...form, club: e.target.value})} />
               </div>
               <div>
                 <label className="admin-stars-label">النادي بالعربية</label>
@@ -211,6 +231,10 @@ const AdminStars = () => {
               <div className="admin-stars-span">
                 <label className="admin-stars-label">السيرة الذاتية بالعربية</label>
                 <textarea className="admin-stars-input admin-stars-textarea" value={form.bioAr} onChange={e => setForm({...form, bioAr: e.target.value})} />
+              </div>
+              <div className="admin-stars-span">
+                <label className="admin-stars-label">السيرة الذاتية بالإنجليزية</label>
+                <textarea className="admin-stars-input admin-stars-textarea" value={form.bio} onChange={e => setForm({...form, bio: e.target.value})} />
               </div>
               <div className="admin-stars-check">
                 <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({...form, featured: e.target.checked})} />

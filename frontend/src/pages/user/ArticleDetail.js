@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
 import { getFullImageUrl } from '../../utils/imageUtils';
@@ -9,6 +9,7 @@ const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numer
 
 const ArticleDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [article, setArticle] = useState(null);
   const [related, setRelated] = useState([]);
 
@@ -39,7 +40,7 @@ const ArticleDetail = () => {
 
   return (
     <div className="container article-detail">
-      <Link to="/articles" className="article-detail-back">العودة للمقالات ←</Link>
+      <Link to={`/articles${location.search || ''}`} className="article-detail-back">العودة للمقالات ←</Link>
       <div className="article-detail-grid">
         <article>
           <span className={`badge article-detail-badge article-detail-badge-${article.type}`}>{typeLabel[article.type]}</span>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './MatchesPage.css';
@@ -24,23 +24,35 @@ const TeamLogo = ({ logo, teamName }) => {
 };
 
 const MatchesPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const initialStatus = searchParams.get('status') || '';
+  const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const initialPageSize = parseInt(searchParams.get('limit') || '3', 10);
   const [matches, setMatches] = useState([]);
-  const [status, setStatus] = useState('');
-  const [page, setPage] = useState(1);
+  const [status, setStatus] = useState(initialStatus);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState([3, 6, 9, 12].includes(initialPageSize) ? initialPageSize : 3);
   const [loading, setLoading] = useState(true);
+  const hasLoaded = useRef(false);
 
   useEffect(() => {
     setLoading(true);
     axios.get(`/api/matches?page=${page}&limit=${pageSize}${status ? `&status=${status}` : ''}`)
-      .then(r => { setMatches(r.data.matches || []); setTotalPages(r.data.pages || 1); })
+      .then(r => { setMatches(r.data.matches || []); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [status, page, pageSize]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(1);
+    if (hasLoaded.current && page > totalPages) setPage(totalPages);
   }, [totalPages, page]);
+
+  useEffect(() => {
+    const params = { page: String(page), limit: String(pageSize) };
+    if (status) params.status = status;
+    setSearchParams(params, { replace: true });
+  }, [page, pageSize, status, setSearchParams]);
 
   const statuses = [{ val: '', label: 'الكل' }, { val: 'live', label: '🔴 مباشر' }, { val: 'upcoming', label: '🕐 قادمة' }, { val: 'finished', label: '✅ منتهية' }];
   const pageSizes = [3, 6, 9, 12];
@@ -97,7 +109,7 @@ const MatchesPage = () => {
       ) : (
         <div className="matches-list">
           {matches.map(m => (
-            <Link key={m._id} to={`/matches/${m._id}`} className="matches-card-link">
+            <Link key={m._id} to={`/matches/${m._id}${location.search}`} className="matches-card-link">
               <div className="card matches-card">
               <div className="matches-card-top">
                 <span className="matches-competition">{m.competition}</span>

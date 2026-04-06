@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './VideosPage.css';
 
 const VideosPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const initialCategory = searchParams.get('category') || '';
+  const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const initialPageSize = parseInt(searchParams.get('limit') || '3', 10);
   const [videos, setVideos] = useState([]);
-  const [category, setCategory] = useState('');
-  const [page, setPage] = useState(1);
+  const [category, setCategory] = useState(initialCategory);
+  const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState([3, 6, 9, 12].includes(initialPageSize) ? initialPageSize : 3);
   const [loading, setLoading] = useState(true);
+  const hasLoaded = useRef(false);
 
   const cats = [{ val: '', label: 'الكل' }, { val: 'highlights', label: 'ملخصات' }, { val: 'interviews', label: 'مقابلات' }, { val: 'analysis', label: 'تحليلات' }];
   const pageSizes = [3, 6, 9, 12];
@@ -36,13 +42,19 @@ const VideosPage = () => {
   useEffect(() => {
     setLoading(true);
     axios.get(`/api/videos?page=${page}&limit=${pageSize}${category ? `&category=${category}` : ''}`)
-      .then(r => { setVideos(r.data.videos); setTotalPages(r.data.pages || 1); })
+      .then(r => { setVideos(r.data.videos); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [page, category, pageSize]);
 
   useEffect(() => {
-    if (page > totalPages) setPage(1);
+    if (hasLoaded.current && page > totalPages) setPage(totalPages);
   }, [totalPages, page]);
+
+  useEffect(() => {
+    const params = { page: String(page), limit: String(pageSize) };
+    if (category) params.category = category;
+    setSearchParams(params, { replace: true });
+  }, [page, pageSize, category, setSearchParams]);
 
   return (
     <div className="container videos-page">
@@ -74,7 +86,7 @@ const VideosPage = () => {
         <>
           <div className="grid-3 videos-grid">
             {videos.map(v => (
-              <Link key={v._id} to={`/videos/${v._id}`} className="videos-card-link">
+              <Link key={v._id} to={`/videos/${v._id}${location.search}`} className="videos-card-link">
                 <div className="card">
                   <div className="videos-thumb">
                     <img src={v.thumbnail ? getFullImageUrl(v.thumbnail) : '/images/placeholder.png'} alt="" className="videos-thumb-img" />

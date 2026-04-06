@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
 import { getFullImageUrl } from '../../utils/imageUtils';
@@ -7,21 +7,51 @@ import './StarDetail.css';
 
 const StarDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [star, setStar] = useState(null);
 
   useEffect(() => { axios.get(`/api/stars/${id}`).then(r => setStar(r.data)); }, [id]);
 
   if (!star) return <div className="star-detail-loading">⏳ جار التحميل...</div>;
 
+  const sportLabels = {
+    Football: 'كرة القدم',
+    Tennis: 'التنس',
+    Basketball: 'كرة السلة',
+    Athletics: 'ألعاب القوى',
+    Swimming: 'السباحة',
+    Other: 'أخرى'
+  };
+
+  const statLabels = {
+    goals: 'الأهداف',
+    assists: 'التمريرات الحاسمة',
+    matches: 'المباريات',
+    rating: 'التقييم',
+    caps: 'المشاركات',
+    cleanSheets: 'شباك نظيفة',
+    saves: 'التصديات',
+    tackles: 'الافتكاكات',
+    interceptions: 'الاعتراضات',
+    ranking: 'الترتيب',
+    titles: 'الألقاب',
+    medals: 'الميداليات',
+    golds: 'ميداليات ذهبية',
+    events: 'السباقات',
+    bestTime: 'أفضل توقيت'
+  };
+
   return (
     <div className="container star-detail">
-      <Link to="/stars" className="star-detail-back">العودة للنجوم ←</Link>
+      <Link to={`/stars${location.search || ''}`} className="star-detail-back">العودة للنجوم ←</Link>
       <div className="star-detail-grid">
         <div className="star-detail-profile">
           {star.image && <img src={getFullImageUrl(star.image)} alt="" className="star-detail-avatar" />}
           <h1 className="star-detail-name">{star.nameAr}</h1>
-          <p className="star-detail-sport">{star.sport}</p>
-          <p className="star-detail-nationality">{star.nationalityAr || star.nationality}</p>
+          <p className="star-detail-sport">{sportLabels[star.sport] || 'أخرى'}</p>
+          {star.position && <p className="star-detail-position">{star.position}</p>}
+          {star.age ? <p className="star-detail-age">العمر: {star.age}</p> : null}
+          <p className="star-detail-nationality">{`${star.nationalityFlag ? `${star.nationalityFlag} ` : ''}${star.nationalityAr || ''}`}</p>
           {star.clubAr && <p className="star-detail-club">{star.clubAr}</p>}
         </div>
         <div>
@@ -38,7 +68,7 @@ const StarDetail = () => {
                 {Object.entries(star.stats).map(([key, val]) => (
                   <div key={key} className="star-detail-stat">
                     <div className="star-detail-stat-value">{val}</div>
-                    <div className="star-detail-stat-key">{key}</div>
+                    <div className="star-detail-stat-key">{statLabels[key] || 'إحصائية'}</div>
                   </div>
                 ))}
               </div>

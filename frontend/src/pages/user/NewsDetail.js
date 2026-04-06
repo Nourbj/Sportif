@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
 import { getFullImageUrl } from '../../utils/imageUtils';
@@ -17,6 +17,7 @@ const categoryLabels = {
 
 const NewsDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [news, setNews] = useState(null);
   const [related, setRelated] = useState([]);
 
@@ -44,7 +45,7 @@ const NewsDetail = () => {
     <div className="container news-detail">
       <div className="news-detail-grid">
         <article>
-          <Link to="/news" className="news-detail-back">العودة للأخبار ←</Link>
+          <Link to={`/news${location.search || ''}`} className="news-detail-back">العودة للأخبار ←</Link>
           <span className="badge badge-red news-detail-badge">
             {categoryLabels[news.category] || news.category}
           </span>

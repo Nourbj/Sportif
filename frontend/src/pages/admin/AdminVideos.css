@@ -37,6 +37,10 @@
   grid-column: span 2;
 }
 
+.admin-videos-media {
+  grid-column: span 1;
+}
+
 .admin-videos-label {
   display: block;
   font-weight: 700;
@@ -296,5 +300,9 @@
 
   .admin-videos-cards {
     display: grid;
+  }
+
+  .admin-videos-media {
+    grid-column: span 2;
   }
 }

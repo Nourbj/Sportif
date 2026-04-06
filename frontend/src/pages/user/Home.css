@@ -332,32 +332,54 @@
 
 .home-star-card {
   text-align: center;
-  padding: 24px 16px;
+  padding: 30px 20px;
 }
 
 .home-star-img {
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #CC0000;
-  margin-bottom: 12px;
+  margin: 0 auto 16px;
+  display: block;
 }
 
 .home-star-name {
-  font-weight: 800;
+  font-weight: 900;
+  font-size: 1.1rem;
   color: #111;
+  margin-bottom: 6px;
 }
 
 .home-star-sport {
-  font-size: 0.85rem;
   color: #CC0000;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
 }
 
 .home-star-nationality {
-  font-size: 0.8rem;
-  color: #999;
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.home-star-position {
+  color: #555;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.home-star-age {
+  color: #666;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+}
+
+.home-star-club {
+  color: #555;
+  font-size: 0.82rem;
 }
 
 @media (max-width: 700px) {
