@@ -6,6 +6,23 @@ import './MatchesPage.css';
 const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
+const TeamLogo = ({ logo, teamName }) => {
+  const [imgError, setImgError] = useState(false);
+
+  if (!logo) return <span aria-label="logo">⚽</span>;
+  if (!logo.startsWith('http') && !logo.startsWith('/')) return <span aria-label="logo">{logo}</span>;
+  if (imgError) return <span aria-label="logo">⚽</span>;
+
+  return (
+    <img
+      src={getFullImageUrl(logo)}
+      alt={`${teamName || ''} logo`}
+      style={{ width: '32px' }}
+      onError={() => setImgError(true)}
+    />
+  );
+};
+
 const MatchesPage = () => {
   const [matches, setMatches] = useState([]);
   const [status, setStatus] = useState('');
@@ -52,9 +69,7 @@ const MatchesPage = () => {
               <div className="matches-score-row">
                 <div className="matches-team">
                   <div className="matches-team-logo">
-                    {m.homeTeamLogo && !m.homeTeamLogo.startsWith('http') && !m.homeTeamLogo.startsWith('/') ? m.homeTeamLogo : (
-                      <img src={getFullImageUrl(m.homeTeamLogo) || '⚽'} alt="" style={{width: '32px'}} />
-                    )}
+                    <TeamLogo logo={m.homeTeamLogo} teamName={m.homeTeam} />
                   </div>
                   <div className="matches-team-name">{m.homeTeam}</div>
                 </div>
@@ -68,9 +83,7 @@ const MatchesPage = () => {
                 </div>
                 <div className="matches-team">
                   <div className="matches-team-logo">
-                    {m.awayTeamLogo && !m.awayTeamLogo.startsWith('http') && !m.awayTeamLogo.startsWith('/') ? m.awayTeamLogo : (
-                      <img src={getFullImageUrl(m.awayTeamLogo) || '⚽'} alt="" style={{width: '32px'}} />
-                    )}
+                    <TeamLogo logo={m.awayTeamLogo} teamName={m.awayTeam} />
                   </div>
                   <div className="matches-team-name">{m.awayTeam}</div>
                 </div>

@@ -12,6 +12,17 @@ const VideoDetail = () => {
   useEffect(() => {
     axios.get(`/api/videos/${id}`).then(r => {
       setVideo(r.data);
+      const viewKey = `video_viewed_${id}`;
+      if (!localStorage.getItem(viewKey)) {
+        localStorage.setItem(viewKey, '1');
+        axios.post(`/api/videos/${id}/view`)
+          .then(res => {
+            if (res.data && typeof res.data.views === 'number') {
+              setVideo(prev => prev ? { ...prev, views: res.data.views } : prev);
+            }
+          })
+          .catch(() => {});
+      }
       axios.get(`/api/videos?category=${r.data.category}&limit=5`).then(res =>
         setRelated(res.data.videos.filter(v => v._id !== id))
       );

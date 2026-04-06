@@ -37,6 +37,19 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
+    // Clear view-tracking keys on logout
+    for (let i = sessionStorage.length - 1; i >= 0; i -= 1) {
+      const key = sessionStorage.key(i);
+      if (key && (key.startsWith('video_viewed_') || key.startsWith('news_viewed_'))) {
+        sessionStorage.removeItem(key);
+      }
+    }
+    for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('video_viewed_') || key.startsWith('news_viewed_'))) {
+        localStorage.removeItem(key);
+      }
+    }
     setUser(null);
   };
 

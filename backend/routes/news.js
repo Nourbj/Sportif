@@ -19,9 +19,22 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const news = await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true }).populate('author', 'name');
+    const news = await News.findById(req.params.id).populate('author', 'name');
     if (!news) return res.status(404).json({ message: 'Not found' });
     res.json(news);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// Increment views (separate endpoint to avoid double-count on GET in dev)
+router.post('/:id/view', async (req, res) => {
+  try {
+    const news = await News.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    ).select('views');
+    if (!news) return res.status(404).json({ message: 'Not found' });
+    res.json({ views: news.views });
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 

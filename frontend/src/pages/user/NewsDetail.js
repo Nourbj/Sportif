@@ -15,6 +15,17 @@ const NewsDetail = () => {
   useEffect(() => {
     axios.get(`/api/news/${id}`).then(r => {
       setNews(r.data);
+      const viewKey = `news_viewed_${id}`;
+      if (!localStorage.getItem(viewKey)) {
+        localStorage.setItem(viewKey, '1');
+        axios.post(`/api/news/${id}/view`)
+          .then(res => {
+            if (res.data && typeof res.data.views === 'number') {
+              setNews(prev => prev ? { ...prev, views: res.data.views } : prev);
+            }
+          })
+          .catch(() => {});
+      }
       axios.get(`/api/news?category=${r.data.category}&limit=4`).then(res => setRelated(res.data.news.filter(n => n._id !== id)));
     });
   }, [id]);

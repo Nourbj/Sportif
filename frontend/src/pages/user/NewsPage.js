@@ -14,6 +14,10 @@ const NewsPage = () => {
   const [loading, setLoading] = useState(true);
 
   const cats = [{ val: '', label: 'الكل' }, { val: 'football', label: 'كرة القدم' }, { val: 'basketball', label: 'كرة السلة' }, { val: 'tennis', label: 'التنس' }, { val: 'local', label: 'محلي' }, { val: 'international', label: 'دولي' }];
+  const categoryLabels = cats.reduce((acc, c) => {
+    if (c.val) acc[c.val] = c.label;
+    return acc;
+  }, {});
 
   useEffect(() => {
     setLoading(true);
@@ -46,7 +50,7 @@ const NewsPage = () => {
                   <img src={n.image && n.image.length > 5 ? getFullImageUrl(n.image) : '/images/placeholder.png'} alt="" className="news-card-img" />
                   <div className="news-card-body">
                     <div className="news-card-meta">
-                      <span className="badge badge-red news-card-badge">{n.category}</span>
+                      <span className="badge badge-red news-card-badge">{categoryLabels[n.category] || n.category}</span>
                       <span className="news-card-date">{formatDate(n.createdAt)}</span>
                     </div>
                     <h3 className="news-card-title">{n.titleAr}</h3>

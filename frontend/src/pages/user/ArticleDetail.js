@@ -15,6 +15,17 @@ const ArticleDetail = () => {
   useEffect(() => {
     axios.get(`/api/articles/${id}`).then(r => {
       setArticle(r.data);
+      const viewKey = `article_viewed_${id}`;
+      if (!localStorage.getItem(viewKey)) {
+        localStorage.setItem(viewKey, '1');
+        axios.post(`/api/articles/${id}/view`)
+          .then(res => {
+            if (res.data && typeof res.data.views === 'number') {
+              setArticle(prev => prev ? { ...prev, views: res.data.views } : prev);
+            }
+          })
+          .catch(() => {});
+      }
       axios.get(`/api/articles?type=${r.data.type}&limit=4`).then(res =>
         setRelated(res.data.articles.filter(a => a._id !== id))
       );
