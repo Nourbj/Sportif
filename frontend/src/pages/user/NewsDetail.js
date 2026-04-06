@@ -6,6 +6,14 @@ import { getFullImageUrl } from '../../utils/imageUtils';
 import './NewsDetail.css';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
+const categoryLabels = {
+  football: 'كرة القدم',
+  basketball: 'كرة السلة',
+  tennis: 'التنس',
+  local: 'محلي',
+  international: 'دولي',
+  other: 'أخرى'
+};
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -37,7 +45,9 @@ const NewsDetail = () => {
       <div className="news-detail-grid">
         <article>
           <Link to="/news" className="news-detail-back">العودة للأخبار ←</Link>
-          <span className="badge badge-red news-detail-badge">{news.category}</span>
+          <span className="badge badge-red news-detail-badge">
+            {categoryLabels[news.category] || news.category}
+          </span>
           <h1 className="news-detail-title">{news.titleAr}</h1>
           <div className="news-detail-meta">
             <span>✍ {news.author?.name}</span>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './MatchesPage.css';
@@ -8,16 +9,15 @@ const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { weekday: 'lo
 
 const TeamLogo = ({ logo, teamName }) => {
   const [imgError, setImgError] = useState(false);
+  const src = logo ? getFullImageUrl(logo) : '';
 
-  if (!logo) return <span aria-label="logo">⚽</span>;
-  if (!logo.startsWith('http') && !logo.startsWith('/')) return <span aria-label="logo">{logo}</span>;
-  if (imgError) return <span aria-label="logo">⚽</span>;
+  if (!src || imgError) return <span aria-label="logo">⚽</span>;
 
   return (
     <img
-      src={getFullImageUrl(logo)}
+      src={src}
       alt={`${teamName || ''} logo`}
-      style={{ width: '32px' }}
+      style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%' }}
       onError={() => setImgError(true)}
     />
   );
@@ -26,27 +26,66 @@ const TeamLogo = ({ logo, teamName }) => {
 const MatchesPage = () => {
   const [matches, setMatches] = useState([]);
   const [status, setStatus] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/matches${status ? `?status=${status}` : ''}`)
-      .then(r => setMatches(r.data))
+    axios.get(`/api/matches?page=${page}&limit=${pageSize}${status ? `&status=${status}` : ''}`)
+      .then(r => { setMatches(r.data.matches || []); setTotalPages(r.data.pages || 1); })
       .finally(() => setLoading(false));
-  }, [status]);
+  }, [status, page, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [totalPages, page]);
 
   const statuses = [{ val: '', label: 'الكل' }, { val: 'live', label: '🔴 مباشر' }, { val: 'upcoming', label: '🕐 قادمة' }, { val: 'finished', label: '✅ منتهية' }];
+  const pageSizes = [3, 6, 9, 12];
+
+  const getPageItems = (current, total) => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const delta = 2;
+    const left = Math.max(1, current - delta);
+    const right = Math.min(total, current + delta);
+    const items = [];
+    if (left > 1) {
+      items.push(1);
+      if (left > 2) items.push('…');
+    }
+    for (let i = left; i <= right; i += 1) items.push(i);
+    if (right < total) {
+      if (right < total - 1) items.push('…');
+      items.push(total);
+    }
+    return items;
+  };
 
   return (
     <div className="container matches-page">
       <h1 className="section-title">مباريات اليوم</h1>
       <div className="matches-filters">
         {statuses.map(s => (
-          <button key={s.val} onClick={() => setStatus(s.val)}
+          <button key={s.val} onClick={() => { setStatus(s.val); setPage(1); }}
             className={`matches-filter-btn${status === s.val ? ' is-active' : ''}`}>
             {s.label}
           </button>
         ))}
+      </div>
+      <div className="matches-page-controls">
+        <span className="matches-page-info">عدد العناصر:</span>
+        <select
+          className="matches-page-select"
+          value={pageSize}
+          onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+        >
+          {pageSizes.map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+        <span className="matches-page-info">صفحة {page} من {totalPages}</span>
       </div>
       {loading ? (
         <div className="matches-loading">⏳ جار التحميل...</div>
@@ -58,7 +97,8 @@ const MatchesPage = () => {
       ) : (
         <div className="matches-list">
           {matches.map(m => (
-            <div key={m._id} className="card matches-card">
+            <Link key={m._id} to={`/matches/${m._id}`} className="matches-card-link">
+              <div className="card matches-card">
               <div className="matches-card-top">
                 <span className="matches-competition">{m.competition}</span>
                 {m.status === 'live' && <span className="badge badge-live">🔴 مباشر الآن</span>}
@@ -88,10 +128,43 @@ const MatchesPage = () => {
                   <div className="matches-team-name">{m.awayTeam}</div>
                 </div>
               </div>
-            </div>
+              </div>
+            </Link>
           ))}
         </div>
       )}
+      <div className="matches-pagination">
+        <button
+          className="matches-page-btn"
+          onClick={() => setPage(Math.max(1, page - 1))}
+          disabled={page === 1}
+        >
+          <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+          السابق
+        </button>
+        {getPageItems(page, totalPages).map((p, idx) => (
+          typeof p === 'number' ? (
+            <button key={p} onClick={() => setPage(p)}
+              className={`matches-page-btn${page === p ? ' is-active' : ''}`}>
+              {p}
+            </button>
+          ) : (
+            <span key={`dots-${idx}`} className="matches-page-ellipsis">{p}</span>
+          )
+        ))}
+        <button
+          className="matches-page-btn"
+          onClick={() => setPage(Math.min(totalPages, page + 1))}
+          disabled={page === totalPages}
+        >
+          التالي
+          <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 };

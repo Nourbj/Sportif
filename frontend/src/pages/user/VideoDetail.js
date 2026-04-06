@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
+import { getEmbedUrl, isDirectVideo } from '../../utils/videoUtils';
 import './VideoDetail.css';
 
 const VideoDetail = () => {
@@ -31,11 +32,7 @@ const VideoDetail = () => {
 
   if (!video) return <div className="video-detail-loading">⏳ جار التحميل...</div>;
 
-  const getYTEmbed = (url) => {
-    if (url.includes('youtube.com/embed/')) return url;
-    const match = url.match(/(?:youtu\.be\/|v=)([^&\n?#]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
-  };
+  const embedUrl = getEmbedUrl(video.url);
 
   return (
     <div className="container video-detail">
@@ -43,7 +40,16 @@ const VideoDetail = () => {
       <div className="video-detail-grid">
         <div>
           <div className="video-detail-player">
-            <iframe src={getYTEmbed(video.url)} className="video-detail-iframe" frameBorder="0" allowFullScreen title={video.titleAr} />
+            {embedUrl ? (
+              <iframe src={embedUrl} className="video-detail-iframe" frameBorder="0" allowFullScreen title={video.titleAr} />
+            ) : isDirectVideo(video.url) ? (
+              <video controls className="video-detail-iframe">
+                <source src={video.url} type={`video/${video.url.split('.').pop()}`} />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <a href={video.url} target="_blank" rel="noopener noreferrer" className="btn-red">فتح الفيديو</a>
+            )}
           </div>
           <span className="badge badge-red video-detail-badge">{video.category}</span>
           <h1 className="video-detail-title">{video.titleAr}</h1>

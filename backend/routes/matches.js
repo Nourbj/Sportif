@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Match = require('../models/Match');
 const { protect, adminOnly } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const uploadMedia = require('../middleware/uploadMedia');
 
 router.get('/', async (req, res) => {
   try {
@@ -41,14 +41,24 @@ router.get('/today', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.post('/', protect, adminOnly, upload.fields([
+router.get('/:id', async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.status(404).json({ message: 'Not found' });
+    res.json(match);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.post('/', protect, adminOnly, uploadMedia.fields([
   { name: 'homeTeamLogo', maxCount: 1 },
-  { name: 'awayTeamLogo', maxCount: 1 }
+  { name: 'awayTeamLogo', maxCount: 1 },
+  { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
     if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
     if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
+    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
     
     if (data.homeScore === '') data.homeScore = null;
     if (data.awayScore === '') data.awayScore = null;
@@ -58,14 +68,16 @@ router.post('/', protect, adminOnly, upload.fields([
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.put('/:id', protect, adminOnly, upload.fields([
+router.put('/:id', protect, adminOnly, uploadMedia.fields([
   { name: 'homeTeamLogo', maxCount: 1 },
-  { name: 'awayTeamLogo', maxCount: 1 }
+  { name: 'awayTeamLogo', maxCount: 1 },
+  { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
     if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
     if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
+    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
 
     const match = await Match.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(match);

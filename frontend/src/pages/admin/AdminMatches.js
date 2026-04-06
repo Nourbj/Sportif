@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
+import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminMatches.css';
 
 const AdminMatches = () => {
@@ -14,6 +15,10 @@ const AdminMatches = () => {
   const [form, setForm] = useState(emptyForm);
   const [homeFile, setHomeFile] = useState(null);
   const [awayFile, setAwayFile] = useState(null);
+  const [homePreview, setHomePreview] = useState('');
+  const [awayPreview, setAwayPreview] = useState('');
+  const [selectedVideoFile, setSelectedVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState('');
 
   const fetchMatches = () => axios.get(`/api/matches?limit=${pageSize}&page=${page}`).then(r => {
     setMatches(r.data.matches || []);
@@ -25,10 +30,32 @@ const AdminMatches = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
+  useEffect(() => {
+    if (!homeFile) { setHomePreview(''); return; }
+    const url = URL.createObjectURL(homeFile);
+    setHomePreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [homeFile]);
+
+  useEffect(() => {
+    if (!awayFile) { setAwayPreview(''); return; }
+    const url = URL.createObjectURL(awayFile);
+    setAwayPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [awayFile]);
+
+  useEffect(() => {
+    if (!selectedVideoFile) { setVideoPreview(''); return; }
+    const url = URL.createObjectURL(selectedVideoFile);
+    setVideoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [selectedVideoFile]);
+
   const resetForm = () => { 
     setForm(emptyForm); 
     setHomeFile(null);
     setAwayFile(null);
+    setSelectedVideoFile(null);
     setEditing(null); 
     setShowForm(false); 
   };
@@ -42,6 +69,7 @@ const AdminMatches = () => {
     
     if (homeFile) formData.append('homeTeamLogo', homeFile);
     if (awayFile) formData.append('awayTeamLogo', awayFile);
+    if (selectedVideoFile) formData.append('video', selectedVideoFile);
 
     if (editing) await axios.put(`/api/matches/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     else await axios.post('/api/matches', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -50,11 +78,21 @@ const AdminMatches = () => {
   };
   const handleEdit = (m) => {
     setForm({ homeTeam: m.homeTeam, awayTeam: m.awayTeam, homeTeamLogo: m.homeTeamLogo || '', awayTeamLogo: m.awayTeamLogo || '', date: m.date.slice(0, 16), competition: m.competition, status: m.status, homeScore: m.homeScore ?? '', awayScore: m.awayScore ?? '', venue: m.venue || '', videoUrl: m.videoUrl || '' });
+    setHomeFile(null);
+    setAwayFile(null);
+    setSelectedVideoFile(null);
     setEditing(m._id); setShowForm(true);
   };
   const handleDelete = async (id) => { if (window.confirm('حذف المباراة؟')) { await axios.delete(`/api/matches/${id}`); fetchMatches(); } };
 
-  const formatDate = (d) => new Date(d).toLocaleString('ar-TN');
+  const formatDate = (d) => new Date(d).toLocaleString('ar-TN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  const youtubeEmbed = getYouTubeEmbedUrl(form.videoUrl);
 
   return (
     <div className="admin-matches">
@@ -77,11 +115,69 @@ const AdminMatches = () => {
               </div>
               <div>
                 <label className="admin-matches-label">شعار المضيف (تحميل ملف)</label>
-                <input type="file" className="admin-matches-input" onChange={e => setHomeFile(e.target.files[0])} accept="image/*" />
+                <label className="admin-image-upload-box">
+                  <input
+                    type="file"
+                    className="admin-image-file-input"
+                    onChange={e => { setHomeFile(e.target.files[0]); setForm({...form, homeTeamLogo: ''}); }}
+                    accept="image/*"
+                  />
+                  <span className="admin-image-upload-icon">+</span>
+                  <span className="admin-image-upload-text">تحميل صورة</span>
+                </label>
+                <label className="admin-matches-label" style={{ marginTop: '8px' }}>أو رابط شعار المضيف</label>
+                <input
+                  className="admin-matches-input"
+                  value={form.homeTeamLogo}
+                  onChange={e => { setForm({...form, homeTeamLogo: e.target.value}); setHomeFile(null); }}
+                  placeholder="https://..."
+                />
+                {(homePreview || form.homeTeamLogo) && (
+                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
+                    <img src={homePreview || getFullImageUrl(form.homeTeamLogo)} alt="" />
+                    <button
+                      type="button"
+                      className="admin-image-remove"
+                      aria-label="إزالة الصورة"
+                      onClick={() => { setHomeFile(null); setForm({...form, homeTeamLogo: ''}); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="admin-matches-label">شعار الضيف (تحميل ملف)</label>
-                <input type="file" className="admin-matches-input" onChange={e => setAwayFile(e.target.files[0])} accept="image/*" />
+                <label className="admin-image-upload-box">
+                  <input
+                    type="file"
+                    className="admin-image-file-input"
+                    onChange={e => { setAwayFile(e.target.files[0]); setForm({...form, awayTeamLogo: ''}); }}
+                    accept="image/*"
+                  />
+                  <span className="admin-image-upload-icon">+</span>
+                  <span className="admin-image-upload-text">تحميل صورة</span>
+                </label>
+                <label className="admin-matches-label" style={{ marginTop: '8px' }}>أو رابط شعار الضيف</label>
+                <input
+                  className="admin-matches-input"
+                  value={form.awayTeamLogo}
+                  onChange={e => { setForm({...form, awayTeamLogo: e.target.value}); setAwayFile(null); }}
+                  placeholder="https://..."
+                />
+                {(awayPreview || form.awayTeamLogo) && (
+                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
+                    <img src={awayPreview || getFullImageUrl(form.awayTeamLogo)} alt="" />
+                    <button
+                      type="button"
+                      className="admin-image-remove"
+                      aria-label="إزالة الصورة"
+                      onClick={() => { setAwayFile(null); setForm({...form, awayTeamLogo: ''}); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="admin-matches-label">المسابقة *</label>
@@ -110,8 +206,50 @@ const AdminMatches = () => {
                 <input type="number" min="0" className="admin-matches-input" value={form.awayScore} onChange={e => setForm({...form, awayScore: e.target.value})} />
               </div>
               <div>
-                <label className="admin-matches-label">رابط الفيديو</label>
-                <input className="admin-matches-input" value={form.videoUrl} onChange={e => setForm({...form, videoUrl: e.target.value})} placeholder="https://..." />
+                <label className="admin-matches-label">الفيديو (تحميل ملف)</label>
+                <label className="admin-image-upload-box">
+                  <input
+                    type="file"
+                    className="admin-image-file-input"
+                    onChange={e => { setSelectedVideoFile(e.target.files[0]); setForm({...form, videoUrl: ''}); }}
+                    accept="video/*"
+                  />
+                  <span className="admin-image-upload-icon">▶</span>
+                  <span className="admin-image-upload-text">تحميل فيديو</span>
+                  <span className="admin-image-upload-hint">MP4, WebM, Ogg</span>
+                </label>
+                <label className="admin-matches-label" style={{ marginTop: '8px' }}>أو رابط الفيديو</label>
+                <input
+                  className="admin-matches-input"
+                  value={form.videoUrl}
+                  onChange={e => { setForm({...form, videoUrl: e.target.value}); setSelectedVideoFile(null); }}
+                  placeholder="https://..."
+                />
+                {(videoPreview || form.videoUrl) && (
+                  <div className="admin-video-preview" style={{ marginTop: '8px' }}>
+                    {videoPreview ? (
+                      <video src={videoPreview} controls />
+                    ) : youtubeEmbed ? (
+                      <iframe
+                        src={youtubeEmbed}
+                        title="Video preview"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video src={getFullVideoUrl(form.videoUrl)} controls />
+                    )}
+                    <button
+                      type="button"
+                      className="admin-image-remove"
+                      aria-label="إزالة الفيديو"
+                      onClick={() => { setSelectedVideoFile(null); setForm({...form, videoUrl: ''}); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="admin-matches-form-actions">

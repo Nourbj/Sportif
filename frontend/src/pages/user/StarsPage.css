@@ -49,14 +49,23 @@
 
 .stars-featured-badge {
   position: absolute;
-  top: -20px;
-  right: -10px;
+  top: -18px;
+  right: 50px;
   background: #FFD700;
-  color: #333;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stars-featured-icon {
+  width: 28px;
+  height: 28px;
+  fill: #8b6b00;
 }
 
 .stars-avatar {
@@ -65,7 +74,8 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #CC0000;
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
+  display: block;
 }
 
 .stars-name {
@@ -90,4 +100,97 @@
 .stars-club {
   color: #555;
   font-size: 0.82rem;
+}
+
+.stars-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.stars-page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #555;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  width: auto;
+}
+
+.stars-page-btn.is-active {
+  border-color: #CC0000;
+  background: #CC0000;
+  color: white;
+}
+
+.pagination-icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stars-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stars-page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 6px;
+  color: #999;
+  font-weight: 700;
+}
+
+.stars-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 20px;
+  flex-wrap: wrap;
+}
+
+.stars-page-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 6px 10px;
+  padding-left: 34px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: linear-gradient(180deg, #ffffff, #f7f7f7);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+}
+
+.stars-page-select:focus {
+  outline: none;
+  border-color: #CC0000;
+  box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.15);
+  background-color: #fff;
+}
+
+.stars-page-info {
+  color: #555;
+  font-weight: 700;
 }

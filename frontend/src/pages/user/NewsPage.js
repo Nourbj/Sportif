@@ -10,6 +10,7 @@ const NewsPage = () => {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -18,13 +19,36 @@ const NewsPage = () => {
     if (c.val) acc[c.val] = c.label;
     return acc;
   }, {});
+  const pageSizes = [3, 6, 9, 12];
+
+  const getPageItems = (current, total) => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const delta = 2;
+    const left = Math.max(1, current - delta);
+    const right = Math.min(total, current + delta);
+    const items = [];
+    if (left > 1) {
+      items.push(1);
+      if (left > 2) items.push('…');
+    }
+    for (let i = left; i <= right; i += 1) items.push(i);
+    if (right < total) {
+      if (right < total - 1) items.push('…');
+      items.push(total);
+    }
+    return items;
+  };
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/news?page=${page}&limit=12${category ? `&category=${category}` : ''}`)
-      .then(r => { setNews(r.data.news); setTotalPages(r.data.pages); })
+    axios.get(`/api/news?page=${page}&limit=${pageSize}${category ? `&category=${category}` : ''}`)
+      .then(r => { setNews(r.data.news); setTotalPages(r.data.pages || 1); })
       .finally(() => setLoading(false));
-  }, [page, category]);
+  }, [page, category, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [totalPages, page]);
 
   return (
     <div className="container news-page">
@@ -36,6 +60,19 @@ const NewsPage = () => {
             {c.label}
           </button>
         ))}
+      </div>
+      <div className="news-page-controls">
+        <span className="news-page-info">عدد العناصر:</span>
+        <select
+          className="news-page-select"
+          value={pageSize}
+          onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+        >
+          {pageSizes.map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+        <span className="news-page-info">صفحة {page} من {totalPages}</span>
       </div>
       {loading ? <div className="news-loading">⏳ جار التحميل...</div> : news.length === 0 ? (
         <div className="news-empty">
@@ -61,12 +98,36 @@ const NewsPage = () => {
             ))}
           </div>
           <div className="news-pagination">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)}
-                className={`news-page-btn${page === p ? ' is-active' : ''}`}>
-                {p}
-              </button>
+            <button
+              className="news-page-btn"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+            >
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+              السابق
+            </button>
+            {getPageItems(page, totalPages).map((p, idx) => (
+              typeof p === 'number' ? (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`news-page-btn${page === p ? ' is-active' : ''}`}>
+                  {p}
+                </button>
+              ) : (
+                <span key={`dots-${idx}`} className="news-page-ellipsis">{p}</span>
+              )
             ))}
+            <button
+              className="news-page-btn"
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
+            >
+              التالي
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
           </div>
         </>
       )}

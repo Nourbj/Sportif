@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article');
 const { protect, adminOnly } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const uploadMedia = require('../middleware/uploadMedia');
 
 router.get('/', async (req, res) => {
   try {
@@ -37,19 +37,27 @@ router.post('/:id/view', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.post('/', protect, adminOnly, upload.single('image'), async (req, res) => {
+router.post('/', protect, adminOnly, uploadMedia.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'video', maxCount: 1 }
+]), async (req, res) => {
   try {
     const data = { ...req.body, author: req.user._id };
-    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    if (req.files?.image?.[0]) data.image = `/uploads/${req.files.image[0].filename}`;
+    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
     const article = await Article.create(data);
     res.status(201).json(article);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-router.put('/:id', protect, adminOnly, upload.single('image'), async (req, res) => {
+router.put('/:id', protect, adminOnly, uploadMedia.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'video', maxCount: 1 }
+]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.file) data.image = `/uploads/${req.file.filename}`;
+    if (req.files?.image?.[0]) data.image = `/uploads/${req.files.image[0].filename}`;
+    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
     const article = await Article.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(article);
   } catch (err) { res.status(500).json({ message: err.message }); }

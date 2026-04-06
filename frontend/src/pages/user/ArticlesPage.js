@@ -11,16 +11,40 @@ const ArticlesPage = () => {
   const [type, setType] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
   const [loading, setLoading] = useState(true);
 
   const types = [{ val: '', label: 'الكل' }, { val: 'analysis', label: 'تحليلات' }, { val: 'opinion', label: 'آراء' }, { val: 'report', label: 'تقارير' }];
+  const pageSizes = [3, 6, 9, 12];
+
+  const getPageItems = (current, total) => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const delta = 2;
+    const left = Math.max(1, current - delta);
+    const right = Math.min(total, current + delta);
+    const items = [];
+    if (left > 1) {
+      items.push(1);
+      if (left > 2) items.push('…');
+    }
+    for (let i = left; i <= right; i += 1) items.push(i);
+    if (right < total) {
+      if (right < total - 1) items.push('…');
+      items.push(total);
+    }
+    return items;
+  };
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/articles?page=${page}&limit=9${type ? `&type=${type}` : ''}`)
-      .then(r => { setArticles(r.data.articles); setTotalPages(r.data.pages); })
+    axios.get(`/api/articles?page=${page}&limit=${pageSize}${type ? `&type=${type}` : ''}`)
+      .then(r => { setArticles(r.data.articles); setTotalPages(r.data.pages || 1); })
       .finally(() => setLoading(false));
-  }, [page, type]);
+  }, [page, type, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [totalPages, page]);
 
   return (
     <div className="container articles-page">
@@ -32,6 +56,19 @@ const ArticlesPage = () => {
             {t.label}
           </button>
         ))}
+      </div>
+      <div className="articles-page-controls">
+        <span className="articles-page-info">عدد العناصر:</span>
+        <select
+          className="articles-page-select"
+          value={pageSize}
+          onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+        >
+          {pageSizes.map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+        <span className="articles-page-info">صفحة {page} من {totalPages}</span>
       </div>
       {loading ? <div className="articles-loading">⏳ جار التحميل...</div> : (
         <>
@@ -55,12 +92,36 @@ const ArticlesPage = () => {
             ))}
           </div>
           <div className="articles-pagination">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)}
-                className={`articles-page-btn${page === p ? ' is-active' : ''}`}>
-                {p}
-              </button>
+            <button
+              className="articles-page-btn"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+            >
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+              السابق
+            </button>
+            {getPageItems(page, totalPages).map((p, idx) => (
+              typeof p === 'number' ? (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`articles-page-btn${page === p ? ' is-active' : ''}`}>
+                  {p}
+                </button>
+              ) : (
+                <span key={`dots-${idx}`} className="articles-page-ellipsis">{p}</span>
+              )
             ))}
+            <button
+              className="articles-page-btn"
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
+            >
+              التالي
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
           </div>
         </>
       )}

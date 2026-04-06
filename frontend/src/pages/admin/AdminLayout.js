@@ -1,11 +1,12 @@
-import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!user || user.role !== 'admin') return <Navigate to="/login" />;
@@ -66,6 +67,13 @@ const AdminLayout = () => {
         </nav>
         <div className="admin-sidebar-footer">
           <Link to="/" className="admin-sidebar-back" onClick={() => setSidebarOpen(false)}>العودة للموقع ←</Link>
+          <button
+            type="button"
+            className="admin-sidebar-logout"
+            onClick={() => { logout(); setSidebarOpen(false); navigate('/login'); }}
+          >
+            تسجيل الخروج
+          </button>
         </div>
       </aside>
 

@@ -1,33 +1,43 @@
-/**
- * Utility to parse video URLs and return an embeddable URL or direct source.
- * Currently supports YouTube and direct links.
- */
-export const getEmbedUrl = (url) => {
-  if (!url) return null;
+import { getFullImageUrl } from './imageUtils';
 
-  // YouTube
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-  const youtubeMatch = url.match(youtubeRegex);
-  if (youtubeMatch && youtubeMatch[1]) {
-    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+export const getFullVideoUrl = (videoPath) => getFullImageUrl(videoPath);
+
+export const getYouTubeEmbedUrl = (url = '') => {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace('www.', '');
+
+    if (host === 'youtu.be') {
+      const id = parsed.pathname.replace('/', '').trim();
+      return id ? `https://www.youtube.com/embed/${id}` : '';
+    }
+
+    if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (parsed.pathname === '/watch') {
+        const id = parsed.searchParams.get('v');
+        return id ? `https://www.youtube.com/embed/${id}` : '';
+      }
+      if (parsed.pathname.startsWith('/embed/')) {
+        const id = parsed.pathname.split('/embed/')[1];
+        return id ? `https://www.youtube.com/embed/${id}` : '';
+      }
+      if (parsed.pathname.startsWith('/shorts/')) {
+        const id = parsed.pathname.split('/shorts/')[1];
+        return id ? `https://www.youtube.com/embed/${id}` : '';
+      }
+    }
+  } catch (err) {
+    return '';
   }
-
-  // Vimeo
-  const vimeoRegex = /vimeo\.com\/(?:video\/)?(\d+)/i;
-  const vimeoMatch = url.match(vimeoRegex);
-  if (vimeoMatch && vimeoMatch[1]) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-  }
-
-  // If it's already an embed link
-  if (url.includes('/embed/') || url.includes('player.vimeo.com')) {
-    return url;
-  }
-
-  return null; // Return null if not a known embeddable hosting site (might be a direct mp4)
+  return '';
 };
 
-export const isDirectVideo = (url) => {
+export const getEmbedUrl = (url = '') => getYouTubeEmbedUrl(url);
+
+export const isDirectVideo = (url = '') => {
   if (!url) return false;
-  return url.match(/\.(mp4|webm|ogg)$/i);
+  if (url.startsWith('data:') || url.startsWith('blob:')) return true;
+  if (url.startsWith('/uploads/') || url.startsWith('uploads/')) return true;
+  const lower = url.toLowerCase();
+  return ['.mp4', '.webm', '.ogg', '.mov', '.m4v'].some(ext => lower.includes(ext));
 };

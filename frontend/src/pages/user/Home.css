@@ -169,6 +169,11 @@
   gap: 16px;
 }
 
+.home-match-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .home-match-card {
   padding: 20px;
 }
@@ -210,6 +215,17 @@
 .home-match-logo {
   font-size: 1.6rem;
   margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+}
+
+.home-match-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .home-match-name {

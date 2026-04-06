@@ -10,6 +10,7 @@ import Home from './pages/user/Home';
 import NewsPage from './pages/user/NewsPage';
 import NewsDetail from './pages/user/NewsDetail';
 import MatchesPage from './pages/user/MatchesPage';
+import MatchDetail from './pages/user/MatchDetail';
 import VideosPage from './pages/user/VideosPage';
 import VideoDetail from './pages/user/VideoDetail';
 import StarsPage from './pages/user/StarsPage';
@@ -49,6 +50,7 @@ function App() {
           <Route path="/news" element={<PublicLayout><NewsPage /></PublicLayout>} />
           <Route path="/news/:id" element={<PublicLayout><NewsDetail /></PublicLayout>} />
           <Route path="/matches" element={<PublicLayout><MatchesPage /></PublicLayout>} />
+          <Route path="/matches/:id" element={<PublicLayout><MatchDetail /></PublicLayout>} />
           <Route path="/videos" element={<PublicLayout><VideosPage /></PublicLayout>} />
           <Route path="/videos/:id" element={<PublicLayout><VideoDetail /></PublicLayout>} />
           <Route path="/stars" element={<PublicLayout><StarsPage /></PublicLayout>} />

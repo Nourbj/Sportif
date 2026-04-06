@@ -7,6 +7,22 @@ import { getFullImageUrl } from '../../utils/imageUtils';
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
 const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
 
+const TeamLogo = ({ logo, teamName }) => {
+  const [imgError, setImgError] = useState(false);
+  const src = logo ? getFullImageUrl(logo) : '';
+
+  if (!src || imgError) return <span aria-label="logo">⚽</span>;
+
+  return (
+    <img
+      src={src}
+      alt={`${teamName || ''} logo`}
+      className="home-match-logo-img"
+      onError={() => setImgError(true)}
+    />
+  );
+};
+
 const Home = () => {
   const [news, setNews] = useState([]);
   const [matches, setMatches] = useState([]);
@@ -79,14 +95,15 @@ const Home = () => {
         <section className="home-section">
           <div className="home-section-header">
             <h2 className="section-title home-section-title">مباريات اليوم</h2>
-            <Link to="/matches" className="home-section-link">عرض الكل →</Link>
-          </div>
+            <Link to="/matches" className="home-section-link" >عرض الكل ←</Link>
+          </div> 
           {matches.length === 0 ? (
             <div className="home-matches-empty">لا توجد مباريات اليوم</div>
           ) : (
             <div className="home-matches-grid">
               {matches.map(m => (
-                <div key={m._id} className="card home-match-card">
+                <Link key={m._id} to={`/matches/${m._id}`} className="home-match-link">
+                  <div className="card home-match-card">
                   <div className="home-match-top">
                     <span className="home-match-competition">{m.competition}</span>
                     {m.status === 'live' ? <span className="badge badge-live">🔴 مباشر</span> :
@@ -95,7 +112,9 @@ const Home = () => {
                   </div>
                   <div className="home-match-row">
                     <div className="home-match-team">
-                      <div className="home-match-logo">{m.homeTeamLogo || '⚽'}</div>
+                      <div className="home-match-logo">
+                        <TeamLogo logo={m.homeTeamLogo} teamName={m.homeTeam} />
+                      </div>
                       <div className="home-match-name">{m.homeTeam}</div>
                     </div>
                     <div className="home-match-score">
@@ -104,11 +123,14 @@ const Home = () => {
                       ) : <div className="home-match-vs">vs</div>}
                     </div>
                     <div className="home-match-team">
-                      <div className="home-match-logo">{m.awayTeamLogo || '⚽'}</div>
+                      <div className="home-match-logo">
+                        <TeamLogo logo={m.awayTeamLogo} teamName={m.awayTeam} />
+                      </div>
                       <div className="home-match-name">{m.awayTeam}</div>
                     </div>
                   </div>
-                </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
@@ -119,7 +141,7 @@ const Home = () => {
           <section className="home-section">
             <div className="home-section-header">
               <h2 className="section-title home-section-title">آخر الأخبار</h2>
-              <Link to="/news" className="home-section-link">عرض الكل →</Link>
+              <Link to="/news" className="home-section-link" >عرض الكل ←</Link>
             </div>
             <div className="grid-4">
               {restNews.map(n => (
@@ -146,14 +168,14 @@ const Home = () => {
           <section className="home-section">
             <div className="home-section-header">
               <h2 className="section-title home-section-title">فيديوهات</h2>
-              <Link to="/videos" className="home-section-link">عرض الكل →</Link>
+              <Link to="/videos" className="home-section-link" >عرض الكل ←</Link>
             </div>
             <div className="grid-4">
               {videos.map(v => (
                 <Link key={v._id} to={`/videos/${v._id}`} className="home-card-link">
                   <div className="card">
                     <div className="home-video-thumb">
-                      {v.thumbnail && <img src={v.thumbnail} alt="" className="home-video-img" />}
+                      {v.thumbnail && <img src={getFullImageUrl(v.thumbnail)} alt="" className="home-video-img" />}
                       <div className="home-video-overlay">
                         <div className="home-video-play">▶</div>
                       </div>
@@ -174,7 +196,7 @@ const Home = () => {
           <section className="home-section">
             <div className="home-section-header">
               <h2 className="section-title home-section-title">نجوم</h2>
-              <Link to="/stars" className="home-section-link">عرض الكل →</Link>
+              <Link to="/stars" className="home-section-link" >عرض الكل ←</Link>
             </div>
             <div className="grid-4">
               {stars.map(s => (

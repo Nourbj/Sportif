@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
+import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminVideos.css';
 
 const AdminVideos = () => {
@@ -13,6 +14,9 @@ const AdminVideos = () => {
   const empty = { titleAr: '', title: '', descriptionAr: '', description: '', url: '', thumbnail: '', category: 'highlights' };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState('');
+  const [selectedVideoFile, setSelectedVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState('');
 
   const fetch = () => axios.get(`/api/videos?limit=${pageSize}&page=${page}`).then(r => {
     setVideos(r.data.videos);
@@ -21,12 +25,27 @@ const AdminVideos = () => {
   useEffect(() => { fetch(); }, [page, pageSize]);
 
   useEffect(() => {
+    if (!selectedFile) { setFilePreview(''); return; }
+    const url = URL.createObjectURL(selectedFile);
+    setFilePreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [selectedFile]);
+
+  useEffect(() => {
+    if (!selectedVideoFile) { setVideoPreview(''); return; }
+    const url = URL.createObjectURL(selectedVideoFile);
+    setVideoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [selectedVideoFile]);
+
+  useEffect(() => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
   const reset = () => { 
     setForm(empty); 
     setSelectedFile(null);
+    setSelectedVideoFile(null);
     setEditing(null); 
     setShowForm(false); 
   };
@@ -40,13 +59,22 @@ const AdminVideos = () => {
     if (selectedFile) {
       formData.append('thumbnail', selectedFile);
     }
+    if (selectedVideoFile) {
+      formData.append('video', selectedVideoFile);
+    }
 
     if (editing) await axios.put(`/api/videos/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     else await axios.post('/api/videos', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     
     reset(); fetch();
   };
-  const handleEdit = (v) => { setForm({ titleAr: v.titleAr, title: v.title || '', descriptionAr: v.descriptionAr || '', description: v.description || '', url: v.url, thumbnail: v.thumbnail || '', category: v.category }); setEditing(v._id); setShowForm(true); };
+  const handleEdit = (v) => { 
+    setForm({ titleAr: v.titleAr, title: v.title || '', descriptionAr: v.descriptionAr || '', description: v.description || '', url: v.url, thumbnail: v.thumbnail || '', category: v.category });
+    setSelectedFile(null);
+    setSelectedVideoFile(null);
+    setEditing(v._id); 
+    setShowForm(true); 
+  };
   const handleDelete = async (id) => { if (window.confirm('حذف الفيديو؟')) { await axios.delete(`/api/videos/${id}`); fetch(); } };
 
   const categoryLabels = {
@@ -55,6 +83,7 @@ const AdminVideos = () => {
     analysis: 'تحليل',
     other: 'أخرى',
   };
+  const youtubeEmbed = getYouTubeEmbedUrl(form.url);
 
   return (
     <div className="admin-videos">
@@ -76,13 +105,84 @@ const AdminVideos = () => {
                 <input className="admin-videos-input" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
               </div>
               <div className="admin-videos-span">
-                <label className="admin-videos-label">رابط YouTube *</label>
-                <input className="admin-videos-input" value={form.url} onChange={e => setForm({...form, url: e.target.value})} required placeholder="https://www.youtube.com/embed/..." />
+                <label className="admin-videos-label">الفيديو (تحميل ملف)</label>
+                <label className="admin-image-upload-box">
+                  <input
+                    type="file"
+                    className="admin-image-file-input"
+                    onChange={e => { setSelectedVideoFile(e.target.files[0]); setForm({...form, url: ''}); }}
+                    accept="video/*"
+                  />
+                  <span className="admin-image-upload-icon">▶</span>
+                  <span className="admin-image-upload-text">تحميل فيديو</span>
+                  <span className="admin-image-upload-hint">MP4, WebM, Ogg</span>
+                </label>
+                <label className="admin-videos-label" style={{ marginTop: '8px' }}>أو رابط الفيديو</label>
+                <input
+                  className="admin-videos-input"
+                  value={form.url}
+                  onChange={e => { setForm({...form, url: e.target.value}); setSelectedVideoFile(null); }}
+                  required={!selectedVideoFile}
+                  placeholder="https://www.youtube.com/embed/..."
+                />
+                {(videoPreview || form.url) && (
+                  <div className="admin-video-preview" style={{ marginTop: '8px' }}>
+                    {videoPreview ? (
+                      <video src={videoPreview} controls />
+                    ) : youtubeEmbed ? (
+                      <iframe
+                        src={youtubeEmbed}
+                        title="Video preview"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video src={getFullVideoUrl(form.url)} controls />
+                    )}
+                    <button
+                      type="button"
+                      className="admin-image-remove"
+                      aria-label="إزالة الفيديو"
+                      onClick={() => { setSelectedVideoFile(null); setForm({...form, url: ''}); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="admin-videos-label">الصورة المصغرة (تحميل ملف)</label>
-                <input type="file" className="admin-videos-input" onChange={e => setSelectedFile(e.target.files[0])} accept="image/*" />
-                {form.thumbnail && <div className="admin-videos-image-preview" style={{fontSize:'0.8rem', color:'#666', marginTop:'4px'}}>الصورة الحالية: {form.thumbnail.split('/').pop()}</div>}
+                <label className="admin-image-upload-box">
+                  <input
+                    type="file"
+                    className="admin-image-file-input"
+                    onChange={e => { setSelectedFile(e.target.files[0]); setForm({...form, thumbnail: ''}); }}
+                    accept="image/*"
+                  />
+                  <span className="admin-image-upload-icon">+</span>
+                  <span className="admin-image-upload-text">تحميل صورة</span>
+                </label>
+                <label className="admin-videos-label" style={{ marginTop: '8px' }}>أو رابط الصورة المصغرة</label>
+                <input
+                  className="admin-videos-input"
+                  value={form.thumbnail}
+                  onChange={e => { setForm({...form, thumbnail: e.target.value}); setSelectedFile(null); }}
+                  placeholder="https://..."
+                />
+                {(filePreview || form.thumbnail) && (
+                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
+                    <img src={filePreview || getFullImageUrl(form.thumbnail)} alt="" />
+                    <button
+                      type="button"
+                      className="admin-image-remove"
+                      aria-label="إزالة الصورة"
+                      onClick={() => { setSelectedFile(null); setForm({...form, thumbnail: ''}); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="admin-videos-label">التصنيف</label>

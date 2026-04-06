@@ -9,16 +9,40 @@ const VideosPage = () => {
   const [category, setCategory] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
   const [loading, setLoading] = useState(true);
 
   const cats = [{ val: '', label: 'الكل' }, { val: 'highlights', label: 'ملخصات' }, { val: 'interviews', label: 'مقابلات' }, { val: 'analysis', label: 'تحليلات' }];
+  const pageSizes = [3, 6, 9, 12];
+
+  const getPageItems = (current, total) => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const delta = 2;
+    const left = Math.max(1, current - delta);
+    const right = Math.min(total, current + delta);
+    const items = [];
+    if (left > 1) {
+      items.push(1);
+      if (left > 2) items.push('…');
+    }
+    for (let i = left; i <= right; i += 1) items.push(i);
+    if (right < total) {
+      if (right < total - 1) items.push('…');
+      items.push(total);
+    }
+    return items;
+  };
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/videos?page=${page}&limit=12${category ? `&category=${category}` : ''}`)
-      .then(r => { setVideos(r.data.videos); setTotalPages(r.data.pages); })
+    axios.get(`/api/videos?page=${page}&limit=${pageSize}${category ? `&category=${category}` : ''}`)
+      .then(r => { setVideos(r.data.videos); setTotalPages(r.data.pages || 1); })
       .finally(() => setLoading(false));
-  }, [page, category]);
+  }, [page, category, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(1);
+  }, [totalPages, page]);
 
   return (
     <div className="container videos-page">
@@ -30,6 +54,19 @@ const VideosPage = () => {
             {c.label}
           </button>
         ))}
+      </div>
+      <div className="videos-page-controls">
+        <span className="videos-page-info">عدد العناصر:</span>
+        <select
+          className="videos-page-select"
+          value={pageSize}
+          onChange={(e) => { setPage(1); setPageSize(Number(e.target.value)); }}
+        >
+          {pageSizes.map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+        <span className="videos-page-info">صفحة {page} من {totalPages}</span>
       </div>
       {loading ? (
         <div className="videos-loading">⏳ جار التحميل...</div>
@@ -55,12 +92,36 @@ const VideosPage = () => {
             ))}
           </div>
           <div className="videos-pagination">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)}
-                className={`videos-page-btn${page === p ? ' is-active' : ''}`}>
-                {p}
-              </button>
+            <button
+              className="videos-page-btn"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+            >
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+              السابق
+            </button>
+            {getPageItems(page, totalPages).map((p, idx) => (
+              typeof p === 'number' ? (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`videos-page-btn${page === p ? ' is-active' : ''}`}>
+                  {p}
+                </button>
+              ) : (
+                <span key={`dots-${idx}`} className="videos-page-ellipsis">{p}</span>
+              )
             ))}
+            <button
+              className="videos-page-btn"
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
+            >
+              التالي
+              <svg className="pagination-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
           </div>
         </>
       )}
