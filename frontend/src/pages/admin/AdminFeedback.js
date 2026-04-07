@@ -25,6 +25,16 @@ const AdminFeedback = () => {
     }).finally(() => setLoading(false));
   };
 
+  const deleteFeedback = (id) => {
+    if (window.confirm('هل أنت متأكد من حذف هذا الرأي؟')) {
+      axios.delete(`/api/feedback/${id}`).then(() => {
+        fetch(); // Refresh the list
+      }).catch(err => {
+        alert('فشل في حذف الرأي: ' + (err.response?.data?.message || err.message));
+      });
+    }
+  };
+
   useEffect(() => { fetch(); }, [page, pageSize]);
   useEffect(() => {
     if (hasLoaded.current && page > pages) setPage(pages);
@@ -41,16 +51,16 @@ const AdminFeedback = () => {
         <table className="admin-feedback-table">
           <thead>
             <tr className="admin-feedback-table-head">
-              {['التقييم', 'الاسم', 'البريد', 'التعليق', 'التاريخ'].map(h => (
+              {['التقييم', 'الاسم', 'البريد', 'التعليق', 'التاريخ', 'الإجراءات'].map(h => (
                 <th key={h} className="admin-feedback-th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="5" className="admin-feedback-empty">⏳ جار التحميل...</td></tr>
+              <tr><td colSpan="6" className="admin-feedback-empty">⏳ جار التحميل...</td></tr>
             ) : feedbacks.length === 0 ? (
-              <tr><td colSpan="5" className="admin-feedback-empty">لا توجد آراء حالياً</td></tr>
+              <tr><td colSpan="6" className="admin-feedback-empty">لا توجد آراء حالياً</td></tr>
             ) : (
               feedbacks.map(f => (
                 <tr key={f._id} className="admin-feedback-tr">
@@ -65,6 +75,9 @@ const AdminFeedback = () => {
                   <td className="admin-feedback-td">{f.anonymous ? '—' : (f.email || '—')}</td>
                   <td className="admin-feedback-td admin-feedback-comment">{f.comment}</td>
                   <td className="admin-feedback-td">{formatDate(f.createdAt)}</td>
+                  <td className="admin-feedback-td">
+                    <button className="admin-feedback-delete-btn" onClick={() => deleteFeedback(f._id)}>حذف</button>
+                  </td>
                 </tr>
               ))
             )}
@@ -87,6 +100,7 @@ const AdminFeedback = () => {
                   ))}
                 </span>
                 <span className="admin-feedback-date">{formatDate(f.createdAt)}</span>
+                <button className="admin-feedback-delete-btn" onClick={() => deleteFeedback(f._id)}>حذف</button>
               </div>
               <div className="admin-feedback-card-row">
                 <span className="admin-feedback-card-label">الاسم</span>

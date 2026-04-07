@@ -169,3 +169,18 @@
     display: grid;
   }
 }
+
+.admin-feedback-delete-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.admin-feedback-delete-btn:hover {
+  background: #c82333;
+}

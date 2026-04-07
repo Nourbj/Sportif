@@ -45,4 +45,16 @@ router.get('/', protect, adminOnly, async (req, res) => {
   }
 });
 
+// Admin: delete feedback
+router.delete('/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Feedback.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: 'Feedback not found' });
+    res.json({ message: 'Feedback deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
