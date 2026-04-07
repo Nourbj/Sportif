@@ -153,6 +153,15 @@
   min-height: 100vh;
 }
 
+.admin-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #666;
+  background: #f4f5f7;
+}
 
 @media (min-width: 901px) {
   .admin-sidebar-toggle {

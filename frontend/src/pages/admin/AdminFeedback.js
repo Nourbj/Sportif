@@ -72,6 +72,39 @@ const AdminFeedback = () => {
         </table>
       </div>
 
+      <div className="admin-feedback-cards">
+        {loading ? (
+          <div className="admin-feedback-card admin-feedback-empty">⏳ جار التحميل...</div>
+        ) : feedbacks.length === 0 ? (
+          <div className="admin-feedback-card admin-feedback-empty">لا توجد آراء حالياً</div>
+        ) : (
+          feedbacks.map(f => (
+            <div key={f._id} className="admin-feedback-card">
+              <div className="admin-feedback-card-head">
+                <span className="admin-feedback-stars">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span key={i} className={`admin-feedback-star${i <= f.rating ? ' is-active' : ''}`}>★</span>
+                  ))}
+                </span>
+                <span className="admin-feedback-date">{formatDate(f.createdAt)}</span>
+              </div>
+              <div className="admin-feedback-card-row">
+                <span className="admin-feedback-card-label">الاسم</span>
+                <span className="admin-feedback-card-value">{f.anonymous ? 'مجهول' : (f.name || '—')}</span>
+              </div>
+              <div className="admin-feedback-card-row">
+                <span className="admin-feedback-card-label">البريد</span>
+                <span className="admin-feedback-card-value">{f.anonymous ? '—' : (f.email || '—')}</span>
+              </div>
+              <div className="admin-feedback-card-row">
+                <span className="admin-feedback-card-label">التعليق</span>
+                <span className="admin-feedback-card-value admin-feedback-card-comment">{f.comment}</span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       <AdminPagination
         page={page}
         pages={pages}

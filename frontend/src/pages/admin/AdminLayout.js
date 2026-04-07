@@ -4,11 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  if (loading) return <div className="admin-loading">⏳ جار التحميل...</div>;
   if (!user || user.role !== 'admin') return <Navigate to="/login" />;
 
   const navItems = [

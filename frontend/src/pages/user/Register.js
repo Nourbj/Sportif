@@ -33,7 +33,12 @@ const Register = () => {
           {[{ key: 'name', label: 'الاسم الكامل', type: 'text' }, { key: 'email', label: 'البريد الإلكتروني', type: 'email' }, { key: 'password', label: 'كلمة المرور', type: 'password' }].map(f => (
             <div key={f.key} className="register-field">
               <label className="register-label">{f.label}</label>
-              <input type={f.type} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} required
+              <input
+                type={f.type}
+                value={form[f.key]}
+                onChange={e => setForm({ ...form, [f.key]: e.target.value })}
+                required
+                autoComplete={f.key === 'password' ? 'new-password' : f.key === 'email' ? 'email' : 'name'}
                 className="register-input" />
             </div>
           ))}

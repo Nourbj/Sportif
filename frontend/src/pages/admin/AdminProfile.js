@@ -93,6 +93,7 @@ const AdminProfile = () => {
                 className="profile-input"
                 type="email"
                 value={form.email}
+                autoComplete="email"
                 onChange={e => setForm({ ...form, email: e.target.value })}
                 required
               />
@@ -103,6 +104,7 @@ const AdminProfile = () => {
                 className="profile-input"
                 type="password"
                 value={form.currentPassword}
+                autoComplete="current-password"
                 onChange={e => setForm({ ...form, currentPassword: e.target.value })}
                 placeholder="اختياري"
               />
@@ -113,6 +115,7 @@ const AdminProfile = () => {
                 className="profile-input"
                 type="password"
                 value={form.newPassword}
+                autoComplete="new-password"
                 onChange={e => setForm({ ...form, newPassword: e.target.value })}
                 placeholder="اختياري"
               />
@@ -123,6 +126,7 @@ const AdminProfile = () => {
                 className="profile-input"
                 type="password"
                 value={form.confirmPassword}
+                autoComplete="new-password"
                 onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                 placeholder="اختياري"
               />

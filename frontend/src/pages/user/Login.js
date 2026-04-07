@@ -38,11 +38,13 @@ const Login = () => {
           <div className="login-field">
             <label className="login-label">البريد الإلكتروني</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+              autoComplete="email"
               className="login-input" />
           </div>
           <div className="login-field login-field-last">
             <label className="login-label">كلمة المرور</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
+              autoComplete="current-password"
               className="login-input" />
           </div>
           <button type="submit" disabled={loading} className="login-submit">
