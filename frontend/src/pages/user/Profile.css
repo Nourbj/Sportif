@@ -107,7 +107,7 @@
 .profile-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 5px 16px;
 }
 
 .profile-input {

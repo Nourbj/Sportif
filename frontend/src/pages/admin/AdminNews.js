@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
-import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminNews.css';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminPagination from '../../components/admin/AdminPagination';
+import AdminMediaInput from '../../components/admin/AdminMediaInput';
 
 const AdminNews = () => {
   const [news, setNews] = useState([]);
@@ -17,9 +17,7 @@ const AdminNews = () => {
   const [total, setTotal] = useState(0);
   const [form, setForm] = useState({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false });
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState('');
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
-  const [videoPreview, setVideoPreview] = useState('');
 
   const fetchNews = () => {
     setLoading(true);
@@ -37,31 +35,17 @@ const AdminNews = () => {
     if (page > pages) setPage(1);
   }, [pages, page]);
 
-  useEffect(() => {
-    if (!selectedFile) { setFilePreview(''); return; }
-    const url = URL.createObjectURL(selectedFile);
-    setFilePreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
-
-  useEffect(() => {
-    if (!selectedVideoFile) { setVideoPreview(''); return; }
-    const url = URL.createObjectURL(selectedVideoFile);
-    setVideoPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedVideoFile]);
-
-  const resetForm = () => { 
-    setForm({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false }); 
+  const resetForm = () => {
+    setForm({ titleAr: '', title: '', contentAr: '', content: '', category: 'football', image: '', videoUrl: '', featured: false });
     setSelectedFile(null);
     setSelectedVideoFile(null);
-    setEditing(null); 
-    setShowForm(false); 
+    setEditing(null);
+    setShowForm(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     Object.keys(form).forEach(key => {
       formData.append(key, form[key]);
@@ -75,16 +59,16 @@ const AdminNews = () => {
 
     if (editing) await axios.put(`/api/news/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     else await axios.post('/api/news', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-    
+
     resetForm(); fetchNews();
   };
 
-  const handleEdit = (n) => { 
+  const handleEdit = (n) => {
     setForm({ titleAr: n.titleAr, title: n.title, contentAr: n.contentAr, content: n.content, category: n.category, image: n.image || '', videoUrl: n.videoUrl || '', featured: n.featured });
     setSelectedFile(null);
     setSelectedVideoFile(null);
-    setEditing(n._id); 
-    setShowForm(true); 
+    setEditing(n._id);
+    setShowForm(true);
   };
   const handleDelete = async (id) => { if (window.confirm('هل تريد حذف هذا الخبر؟')) { await axios.delete(`/api/news/${id}`); fetchNews(); } };
 
@@ -96,8 +80,6 @@ const AdminNews = () => {
     international: 'دولي',
     other: 'أخرى',
   };
-  const youtubeEmbed = getYouTubeEmbedUrl(form.videoUrl);
-
   return (
     <div className="admin-news">
       <AdminPageHeader
@@ -113,111 +95,55 @@ const AdminNews = () => {
             <div className="admin-news-form-grid">
               <div>
                 <label className="admin-news-label">العنوان بالعربية *</label>
-                <input className="admin-news-input" value={form.titleAr} onChange={e => setForm({...form, titleAr: e.target.value})} required />
+                <input className="admin-news-input" value={form.titleAr} onChange={e => setForm({ ...form, titleAr: e.target.value })} required />
               </div>
               <div>
                 <label className="admin-news-label">العنوان بالفرنسية/الإنجليزية</label>
-                <input className="admin-news-input" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+                <input className="admin-news-input" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
               </div>
               <div className="admin-news-span">
                 <label className="admin-news-label">المحتوى بالعربية *</label>
-                <textarea className="admin-news-input admin-news-textarea-lg" value={form.contentAr} onChange={e => setForm({...form, contentAr: e.target.value})} required />
+                <textarea className="admin-news-input admin-news-textarea-lg" value={form.contentAr} onChange={e => setForm({ ...form, contentAr: e.target.value })} required />
               </div>
               <div className="admin-news-span">
                 <label className="admin-news-label">المحتوى بالفرنسية/الإنجليزية</label>
-                <textarea className="admin-news-input admin-news-textarea-md" value={form.content} onChange={e => setForm({...form, content: e.target.value})} />
+                <textarea className="admin-news-input admin-news-textarea-md" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
               </div>
               <div>
                 <label className="admin-news-label">التصنيف</label>
-                <select className="admin-news-input" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
-                  {['football','basketball','tennis','local','international','other'].map(c => (
+                <select className="admin-news-input" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                  {['football', 'basketball', 'tennis', 'local', 'international', 'other'].map(c => (
                     <option key={c} value={c}>{categoryLabels[c] || c}</option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="admin-news-label">الصورة (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedFile(e.target.files[0]); setForm({...form, image: ''}); }}
-                    accept="image/*"
-                  />
-                  <span className="admin-image-upload-icon">+</span>
-                  <span className="admin-image-upload-text">تحميل صورة</span>
-                </label>
-                <label className="admin-news-label" style={{ marginTop: '8px' }}>أو رابط الصورة</label>
-                <input
-                  className="admin-news-input"
-                  value={form.image}
-                  onChange={e => { setForm({...form, image: e.target.value}); setSelectedFile(null); }}
-                  placeholder="https://..."
-                />
-                {(filePreview || form.image) && (
-                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
-                    <img src={filePreview || getFullImageUrl(form.image)} alt="" />
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الصورة"
-                      onClick={() => { setSelectedFile(null); setForm({...form, image: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="admin-news-label">الفيديو (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedVideoFile(e.target.files[0]); setForm({...form, videoUrl: ''}); }}
-                    accept="video/*"
-                  />
-                  <span className="admin-image-upload-icon">▶</span>
-                  <span className="admin-image-upload-text">تحميل فيديو</span>
-                  <span className="admin-image-upload-hint">MP4, WebM, Ogg</span>
-                </label>
-                <label className="admin-news-label" style={{ marginTop: '8px' }}>أو رابط الفيديو</label>
-                <input
-                  className="admin-news-input"
-                  value={form.videoUrl}
-                  onChange={e => { setForm({...form, videoUrl: e.target.value}); setSelectedVideoFile(null); }}
-                  placeholder="https://..."
-                />
-                {(videoPreview || form.videoUrl) && (
-                  <div className="admin-video-preview" style={{ marginTop: '8px' }}>
-                    {videoPreview ? (
-                      <video src={videoPreview} controls />
-                    ) : youtubeEmbed ? (
-                      <iframe
-                        src={youtubeEmbed}
-                        title="Video preview"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video src={getFullVideoUrl(form.videoUrl)} controls />
-                    )}
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الفيديو"
-                      onClick={() => { setSelectedVideoFile(null); setForm({...form, videoUrl: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
               <div className="admin-news-check">
-                <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({...form, featured: e.target.checked})} />
+                <input type="checkbox" id="featured" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} />
                 <label htmlFor="featured" className="admin-news-check-label">خبر مميز</label>
               </div>
+              <div>
+                <AdminMediaInput
+                  label="الصورة"
+                  type="image"
+                  file={selectedFile}
+                  setFile={setSelectedFile}
+                  value={form.image}
+                  onValueChange={(val) => setForm({ ...form, image: val })}
+                  hint="JPG, PNG, WebP"
+                />
+              </div>
+              <div>
+                <AdminMediaInput
+                  label="الفيديو"
+                  type="video"
+                  file={selectedVideoFile}
+                  setFile={setSelectedVideoFile}
+                  value={form.videoUrl}
+                  onValueChange={(val) => setForm({ ...form, videoUrl: val })}
+                  hint="MP4, WebM, Ogg"
+                />
+              </div>
+
             </div>
             <div className="admin-news-form-actions">
               <button type="submit" className="btn-red">{editing ? 'حفظ التعديلات' : 'نشر الخبر'}</button>

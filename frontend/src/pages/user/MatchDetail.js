@@ -2,17 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getEmbedUrl, isDirectVideo, getFullVideoUrl } from '../../utils/videoUtils';
+import { formatDateTimeAr } from '../../utils/timeUtils';
 import { getFullImageUrl } from '../../utils/imageUtils';
 import './MatchDetail.css';
-
-const formatDateTime = (d) =>
-  new Date(d).toLocaleString('ar-TN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 
 const TeamLogo = ({ logo, teamName }) => {
   const [imgError, setImgError] = useState(false);
@@ -71,7 +63,7 @@ const MatchDetail = () => {
             </div>
 
             <div className="match-detail-meta">
-              <span>📅 {formatDateTime(match.date)}</span>
+              <span>📅 {formatDateTimeAr(match.date)}</span>
               {match.venue && <span>📍 {match.venue}</span>}
             </div>
           </div>
@@ -118,7 +110,7 @@ const MatchDetail = () => {
             </div>
             <div className="match-detail-aside-row">
               <span className="match-detail-aside-label">الوقت</span>
-              <span className="match-detail-aside-value">{formatDateTime(match.date)}</span>
+              <span className="match-detail-aside-value">{formatDateTimeAr(match.date)}</span>
             </div>
             {match.venue && (
               <div className="match-detail-aside-row">

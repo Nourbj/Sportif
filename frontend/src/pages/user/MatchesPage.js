@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
+import { formatTimeAr } from '../../utils/timeUtils';
 import './MatchesPage.css';
 
-const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
 const TeamLogo = ({ logo, teamName }) => {
@@ -115,7 +115,7 @@ const MatchesPage = () => {
                 <span className="matches-competition">{m.competition}</span>
                 {m.status === 'live' && <span className="badge badge-live">🔴 مباشر الآن</span>}
                 {m.status === 'finished' && <span className="matches-status-finished">انتهت المباراة</span>}
-                {m.status === 'upcoming' && <span className="matches-status-upcoming">📅 {formatDate(m.date)} — {formatTime(m.date)}</span>}
+                {m.status === 'upcoming' && <span className="matches-status-upcoming">📅 {formatDate(m.date)} — {formatTimeAr(m.date)}</span>}
                 {m.venue && <span className="matches-venue">📍 {m.venue}</span>}
               </div>
               <div className="matches-score-row">
@@ -131,7 +131,7 @@ const MatchesPage = () => {
                   ) : (
                     <div className="matches-vs">VS</div>
                   )}
-                  {m.status === 'upcoming' && <div className="matches-time">{formatTime(m.date)}</div>}
+                  {m.status === 'upcoming' && <div className="matches-time">{formatTimeAr(m.date)}</div>}
                 </div>
                 <div className="matches-team">
                   <div className="matches-team-logo">

@@ -30,7 +30,7 @@
 .admin-videos-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 5px 16px;
 }
 
 .admin-videos-span {

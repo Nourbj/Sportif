@@ -30,7 +30,7 @@
 .admin-stars-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 5px 16px;
 }
 
 .admin-stars-span {
@@ -91,8 +91,8 @@
 }
 
 .admin-stars-avatar {
-  width: 80px;
-  height: 80px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #CC0000;

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
+import { formatTimeAr } from '../../utils/timeUtils';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('ar-TN', { year: 'numeric', month: 'long', day: 'numeric' });
-const formatTime = (d) => new Date(d).toLocaleTimeString('ar-TN', { hour: '2-digit', minute: '2-digit' });
 const categoryLabels = {
   football: 'كرة القدم',
   basketball: 'كرة السلة',
@@ -138,7 +138,7 @@ const Home = () => {
                     <span className="home-match-competition">{m.competition}</span>
                     {m.status === 'live' ? <span className="badge badge-live">🔴 مباشر</span> :
                       m.status === 'finished' ? <span className="badge home-match-finished">انتهت</span> :
-                        <span className="home-match-time">{formatTime(m.date)}</span>}
+                        <span className="home-match-time">{formatTimeAr(m.date)}</span>}
                   </div>
                   <div className="home-match-row">
                     <div className="home-match-team">

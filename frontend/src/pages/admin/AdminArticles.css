@@ -2,18 +2,6 @@
   width: 100%;
 }
 
-.admin-articles-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-}
-
-.admin-articles-title {
-  font-size: 1.6rem;
-  font-weight: 900;
-}
-
 .admin-articles-form-card {
   background: #FFFFFF;
   padding: 28px;
@@ -30,7 +18,7 @@
 .admin-articles-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 5px 16px;
 }
 
 .admin-articles-span {
@@ -120,81 +108,6 @@
 .admin-articles-card-actions {
   display: flex;
   gap: 10px;
-}
-
-.admin-articles-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 18px;
-  flex-wrap: wrap;
-}
-
-.admin-articles-page-btn {
-  border: 1px solid #e2e2e2;
-  background: #fff;
-  color: #333;
-  font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.admin-articles-page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-articles-page-info {
-  color: #666;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.admin-articles-page-list {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.admin-articles-page-number {
-  border: 1px solid #e2e2e2;
-  background: #fff;
-  color: #333;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  min-width: 36px;
-}
-
-.admin-articles-page-number.is-active {
-  background: #1a73e8;
-  color: #fff;
-  border-color: #1a73e8;
-}
-
-.admin-articles-page-ellipsis {
-  color: #777;
-  font-weight: 700;
-}
-
-.admin-articles-page-size {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  color: #555;
-}
-
-.admin-articles-page-select {
-  padding: 6px 10px;
-  border: 1px solid #e2e2e2;
-  border-radius: 8px;
-  background: #fff;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .admin-articles-table {
@@ -290,12 +203,6 @@
 }
 
 @media (max-width: 700px) {
-  .admin-articles-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
   .admin-articles-table-card {
     display: none;
   }

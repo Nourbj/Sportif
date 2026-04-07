@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
-import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminStars.css';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminPagination from '../../components/admin/AdminPagination';
+import AdminMediaInput from '../../components/admin/AdminMediaInput';
 
 const AdminStars = () => {
   const [stars, setStars] = useState([]);
@@ -12,14 +12,12 @@ const AdminStars = () => {
   const [editing, setEditing] = useState(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(4);
   const [total, setTotal] = useState(0);
   const empty = { nameAr: '', name: '', sport: 'Football', position: '', age: '', nationality: '', nationalityAr: '', nationalityFlag: '', club: '', clubAr: '', image: '', bioAr: '', bio: '', videoUrl: '', featured: false };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState('');
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
-  const [videoPreview, setVideoPreview] = useState('');
 
   const fetch = () => axios.get(`/api/stars?limit=${pageSize}&page=${page}`).then(r => {
     setStars(r.data.stars || []);
@@ -31,20 +29,6 @@ const AdminStars = () => {
   useEffect(() => {
     if (page > pages) setPage(1);
   }, [pages, page]);
-
-  useEffect(() => {
-    if (!selectedFile) { setFilePreview(''); return; }
-    const url = URL.createObjectURL(selectedFile);
-    setFilePreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
-
-  useEffect(() => {
-    if (!selectedVideoFile) { setVideoPreview(''); return; }
-    const url = URL.createObjectURL(selectedVideoFile);
-    setVideoPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedVideoFile]);
 
   const reset = () => { 
     setForm(empty); 
@@ -89,8 +73,6 @@ const AdminStars = () => {
     Swimming: 'السباحة',
     Other: 'أخرى',
   };
-  const youtubeEmbed = getYouTubeEmbedUrl(form.videoUrl);
-
   return (
     <div className="admin-stars">
       <AdminPageHeader
@@ -155,83 +137,26 @@ const AdminStars = () => {
                 <input className="admin-stars-input" value={form.clubAr} onChange={e => setForm({...form, clubAr: e.target.value})} />
               </div>
               <div>
-                <label className="admin-stars-label">الصورة (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedFile(e.target.files[0]); setForm({...form, image: ''}); }}
-                    accept="image/*"
-                  />
-                  <span className="admin-image-upload-icon">+</span>
-                  <span className="admin-image-upload-text">تحميل صورة</span>
-                </label>
-                <label className="admin-stars-label" style={{ marginTop: '8px' }}>أو رابط الصورة</label>
-                <input
-                  className="admin-stars-input"
+                <AdminMediaInput
+                  label="الصورة"
+                  type="image"
+                  file={selectedFile}
+                  setFile={setSelectedFile}
                   value={form.image}
-                  onChange={e => { setForm({...form, image: e.target.value}); setSelectedFile(null); }}
-                  placeholder="https://..."
+                  onValueChange={(val) => setForm({ ...form, image: val })}
+                  hint="JPG, PNG, WebP"
                 />
-                {(filePreview || form.image) && (
-                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
-                    <img src={filePreview || getFullImageUrl(form.image)} alt="" />
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الصورة"
-                      onClick={() => { setSelectedFile(null); setForm({...form, image: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
               </div>
               <div>
-                <label className="admin-stars-label">الفيديو (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedVideoFile(e.target.files[0]); setForm({...form, videoUrl: ''}); }}
-                    accept="video/*"
-                  />
-                  <span className="admin-image-upload-icon">▶</span>
-                  <span className="admin-image-upload-text">تحميل فيديو</span>
-                  <span className="admin-image-upload-hint">MP4, WebM, Ogg</span>
-                </label>
-                <label className="admin-stars-label" style={{ marginTop: '8px' }}>أو رابط الفيديو</label>
-                <input
-                  className="admin-stars-input"
+                <AdminMediaInput
+                  label="الفيديو"
+                  type="video"
+                  file={selectedVideoFile}
+                  setFile={setSelectedVideoFile}
                   value={form.videoUrl}
-                  onChange={e => { setForm({...form, videoUrl: e.target.value}); setSelectedVideoFile(null); }}
-                  placeholder="https://..."
+                  onValueChange={(val) => setForm({ ...form, videoUrl: val })}
+                  hint="MP4, WebM, Ogg"
                 />
-                {(videoPreview || form.videoUrl) && (
-                  <div className="admin-video-preview" style={{ marginTop: '8px' }}>
-                    {videoPreview ? (
-                      <video src={videoPreview} controls />
-                    ) : youtubeEmbed ? (
-                      <iframe
-                        src={youtubeEmbed}
-                        title="Video preview"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video src={getFullVideoUrl(form.videoUrl)} controls />
-                    )}
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الفيديو"
-                      onClick={() => { setSelectedVideoFile(null); setForm({...form, videoUrl: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
               </div>
               <div className="admin-stars-span">
                 <label className="admin-stars-label">السيرة الذاتية بالعربية</label>

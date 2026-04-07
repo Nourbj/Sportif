@@ -30,7 +30,7 @@
 .admin-matches-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 5px 16px;
 }
 
 .admin-matches-label {
@@ -208,6 +208,25 @@
 
 .admin-matches-strong {
   font-weight: 700;
+}
+
+.admin-matches-logos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-matches-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.admin-matches-vs {
+  color: #888;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .admin-matches-muted {

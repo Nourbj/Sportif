@@ -54,7 +54,13 @@ const AdminFeedback = () => {
             ) : (
               feedbacks.map(f => (
                 <tr key={f._id} className="admin-feedback-tr">
-                  <td className="admin-feedback-td">{'★'.repeat(f.rating)}</td>
+                  <td className="admin-feedback-td">
+                    <span className="admin-feedback-stars">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <span key={i} className={`admin-feedback-star${i <= f.rating ? ' is-active' : ''}`}>★</span>
+                      ))}
+                    </span>
+                  </td>
                   <td className="admin-feedback-td">{f.anonymous ? 'مجهول' : (f.name || '—')}</td>
                   <td className="admin-feedback-td">{f.anonymous ? '—' : (f.email || '—')}</td>
                   <td className="admin-feedback-td admin-feedback-comment">{f.comment}</td>

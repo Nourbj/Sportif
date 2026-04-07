@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getFullImageUrl } from '../../utils/imageUtils';
-import { getFullVideoUrl, getYouTubeEmbedUrl } from '../../utils/videoUtils';
 import './AdminVideos.css';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminPagination from '../../components/admin/AdminPagination';
+import AdminMediaInput from '../../components/admin/AdminMediaInput';
 
 const AdminVideos = () => {
   const [videos, setVideos] = useState([]);
@@ -17,9 +17,7 @@ const AdminVideos = () => {
   const empty = { titleAr: '', title: '', descriptionAr: '', description: '', url: '', thumbnail: '', category: 'highlights' };
   const [form, setForm] = useState(empty);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState('');
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
-  const [videoPreview, setVideoPreview] = useState('');
 
   const fetch = () => axios.get(`/api/videos?limit=${pageSize}&page=${page}`).then(r => {
     setVideos(r.data.videos);
@@ -27,20 +25,6 @@ const AdminVideos = () => {
     setTotal(r.data.total || 0);
   });
   useEffect(() => { fetch(); }, [page, pageSize]);
-
-  useEffect(() => {
-    if (!selectedFile) { setFilePreview(''); return; }
-    const url = URL.createObjectURL(selectedFile);
-    setFilePreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedFile]);
-
-  useEffect(() => {
-    if (!selectedVideoFile) { setVideoPreview(''); return; }
-    const url = URL.createObjectURL(selectedVideoFile);
-    setVideoPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [selectedVideoFile]);
 
   useEffect(() => {
     if (page > pages) setPage(1);
@@ -87,8 +71,6 @@ const AdminVideos = () => {
     analysis: 'تحليل',
     other: 'أخرى',
   };
-  const youtubeEmbed = getYouTubeEmbedUrl(form.url);
-
   return (
     <div className="admin-videos">
       <AdminPageHeader
@@ -122,84 +104,28 @@ const AdminVideos = () => {
                 <textarea className="admin-videos-input admin-videos-textarea" value={form.descriptionAr} onChange={e => setForm({...form, descriptionAr: e.target.value})} />
               </div>
               <div className="admin-videos-media">
-                <label className="admin-videos-label">الفيديو (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedVideoFile(e.target.files[0]); setForm({...form, url: ''}); }}
-                    accept="video/*"
-                  />
-                  <span className="admin-image-upload-icon">▶</span>
-                  <span className="admin-image-upload-text">تحميل فيديو</span>
-                  <span className="admin-image-upload-hint">MP4, WebM, Ogg</span>
-                </label>
-                <label className="admin-videos-label" style={{ marginTop: '8px' }}>أو رابط الفيديو</label>
-                <input
-                  className="admin-videos-input"
+                <AdminMediaInput
+                  label="الفيديو"
+                  type="video"
+                  file={selectedVideoFile}
+                  setFile={setSelectedVideoFile}
                   value={form.url}
-                  onChange={e => { setForm({...form, url: e.target.value}); setSelectedVideoFile(null); }}
-                  required={!selectedVideoFile}
+                  onValueChange={(val) => setForm({ ...form, url: val })}
                   placeholder="https://www.youtube.com/embed/..."
+                  required
+                  hint="MP4, WebM, Ogg"
                 />
-                {(videoPreview || form.url) && (
-                  <div className="admin-video-preview" style={{ marginTop: '8px' }}>
-                    {videoPreview ? (
-                      <video src={videoPreview} controls />
-                    ) : youtubeEmbed ? (
-                      <iframe
-                        src={youtubeEmbed}
-                        title="Video preview"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video src={getFullVideoUrl(form.url)} controls />
-                    )}
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الفيديو"
-                      onClick={() => { setSelectedVideoFile(null); setForm({...form, url: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
               </div>
               <div className="admin-videos-media">
-                <label className="admin-videos-label">الصورة المصغرة (تحميل ملف)</label>
-                <label className="admin-image-upload-box">
-                  <input
-                    type="file"
-                    className="admin-image-file-input"
-                    onChange={e => { setSelectedFile(e.target.files[0]); setForm({...form, thumbnail: ''}); }}
-                    accept="image/*"
-                  />
-                  <span className="admin-image-upload-icon">+</span>
-                  <span className="admin-image-upload-text">تحميل صورة</span>
-                </label>
-                <label className="admin-videos-label" style={{ marginTop: '8px' }}>أو رابط الصورة المصغرة</label>
-                <input
-                  className="admin-videos-input"
+                <AdminMediaInput
+                  label="الصورة المصغرة"
+                  type="image"
+                  file={selectedFile}
+                  setFile={setSelectedFile}
                   value={form.thumbnail}
-                  onChange={e => { setForm({...form, thumbnail: e.target.value}); setSelectedFile(null); }}
-                  placeholder="https://..."
+                  onValueChange={(val) => setForm({ ...form, thumbnail: val })}
+                  hint="JPG, PNG, WebP"
                 />
-                {(filePreview || form.thumbnail) && (
-                  <div className="admin-image-preview" style={{ marginTop: '8px' }}>
-                    <img src={filePreview || getFullImageUrl(form.thumbnail)} alt="" />
-                    <button
-                      type="button"
-                      className="admin-image-remove"
-                      aria-label="إزالة الصورة"
-                      onClick={() => { setSelectedFile(null); setForm({...form, thumbnail: ''}); }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
             <div className="admin-videos-form-actions">
