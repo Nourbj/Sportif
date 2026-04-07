@@ -30,7 +30,7 @@ const Footer = () => (
           <div className="footer-contact">
             <div className="footer-contact-item">
               <i className="fas fa-envelope footer-contact-icon"></i>
-              <span>contact@sportif.tn</span>
+              <span>contact@sportify.tn</span>
             </div>
             <div className="footer-contact-item">
               <i className="fas fa-phone-alt footer-contact-icon"></i>
@@ -43,16 +43,16 @@ const Footer = () => (
           </div>
           <div className="footer-social">
             <span className="footer-social-item">
-              <i className="fab fa-facebook footer-social-icon footer-social-facebook"></i> sportif.tn
+              <i className="fab fa-facebook footer-social-icon footer-social-facebook"></i> sportify.tn
             </span>
             <span className="footer-social-item">
-              <i className="fab fa-instagram footer-social-icon footer-social-instagram"></i> sportif.tn
+              <i className="fab fa-instagram footer-social-icon footer-social-instagram"></i> sportify.tn
             </span>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        © 2026 Sportif.tn - جميع الحقوق محفوظة
+        © 2026 Sportify.tn - جميع الحقوق محفوظة
       </div>
     </div>
   </footer>
