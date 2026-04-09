@@ -3,6 +3,7 @@ const router = express.Router();
 const Video = require('../models/Video');
 const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
+const { buildMediaUrl } = require('../utils/mediaUrl');
 
 router.get('/', async (req, res) => {
   try {
@@ -43,8 +44,8 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body, author: req.user._id };
-    if (req.files?.thumbnail?.[0]) data.thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
-    if (req.files?.video?.[0]) data.url = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.thumbnail?.[0]) data.thumbnail = buildMediaUrl(req, req.files.thumbnail[0].filename);
+    if (req.files?.video?.[0]) data.url = buildMediaUrl(req, req.files.video[0].filename);
     const video = await Video.create(data);
     res.status(201).json(video);
   } catch (err) { res.status(500).json({ message: err.message }); }
@@ -56,8 +57,8 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.files?.thumbnail?.[0]) data.thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
-    if (req.files?.video?.[0]) data.url = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.thumbnail?.[0]) data.thumbnail = buildMediaUrl(req, req.files.thumbnail[0].filename);
+    if (req.files?.video?.[0]) data.url = buildMediaUrl(req, req.files.video[0].filename);
     const video = await Video.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(video);
   } catch (err) { res.status(500).json({ message: err.message }); }

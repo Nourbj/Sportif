@@ -3,6 +3,7 @@ const router = express.Router();
 const Star = require('../models/Star');
 const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
+const { buildMediaUrl } = require('../utils/mediaUrl');
 
 router.get('/', async (req, res) => {
   try {
@@ -39,8 +40,8 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.files?.image?.[0]) data.image = `/uploads/${req.files.image[0].filename}`;
-    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
     const star = await Star.create(data);
     res.status(201).json(star);
   } catch (err) { res.status(500).json({ message: err.message }); }
@@ -52,8 +53,8 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.files?.image?.[0]) data.image = `/uploads/${req.files.image[0].filename}`;
-    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
     const star = await Star.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(star);
   } catch (err) { res.status(500).json({ message: err.message }); }

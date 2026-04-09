@@ -3,6 +3,7 @@ const router = express.Router();
 const Match = require('../models/Match');
 const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
+const { buildMediaUrl } = require('../utils/mediaUrl');
 
 router.get('/', async (req, res) => {
   try {
@@ -64,10 +65,10 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
-    if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
-    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
-    if (req.files?.announcementImage?.[0]) data.announcementImage = `/uploads/${req.files.announcementImage[0].filename}`;
+    if (req.files['homeTeamLogo']) data.homeTeamLogo = buildMediaUrl(req, req.files['homeTeamLogo'][0].filename);
+    if (req.files['awayTeamLogo']) data.awayTeamLogo = buildMediaUrl(req, req.files['awayTeamLogo'][0].filename);
+    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
+    if (req.files?.announcementImage?.[0]) data.announcementImage = buildMediaUrl(req, req.files.announcementImage[0].filename);
     
     if (data.homeScore === '') data.homeScore = null;
     if (data.awayScore === '') data.awayScore = null;
@@ -86,10 +87,10 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
-    if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
-    if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
-    if (req.files?.announcementImage?.[0]) data.announcementImage = `/uploads/${req.files.announcementImage[0].filename}`;
+    if (req.files['homeTeamLogo']) data.homeTeamLogo = buildMediaUrl(req, req.files['homeTeamLogo'][0].filename);
+    if (req.files['awayTeamLogo']) data.awayTeamLogo = buildMediaUrl(req, req.files['awayTeamLogo'][0].filename);
+    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
+    if (req.files?.announcementImage?.[0]) data.announcementImage = buildMediaUrl(req, req.files.announcementImage[0].filename);
     if (data.date === '') data.date = null;
 
     const match = await Match.findByIdAndUpdate(req.params.id, data, { new: true });
