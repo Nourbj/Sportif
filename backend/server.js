@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 const os = require('os');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 const uploadsDir = process.env.UPLOADS_DIR
   ? path.resolve(process.env.UPLOADS_DIR)
-  : process.env.VERCEL
+  : fs.existsSync(os.tmpdir())
     ? path.join(os.tmpdir(), 'uploads')
     : path.join(__dirname, 'uploads');
 app.use('/uploads', express.static(uploadsDir));

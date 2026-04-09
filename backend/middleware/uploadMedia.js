@@ -7,7 +7,7 @@ const os = require('os');
 // En serverless (Vercel), seul /tmp est inscriptible.
 const uploadsDir = process.env.UPLOADS_DIR
   ? path.resolve(process.env.UPLOADS_DIR)
-  : process.env.VERCEL
+  : fs.existsSync(os.tmpdir())
     ? path.join(os.tmpdir(), 'uploads')
     : path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
