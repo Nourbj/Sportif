@@ -30,6 +30,7 @@ const MatchesPage = () => {
   const initialPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
   const initialPageSize = parseInt(searchParams.get('limit') || '3', 10);
   const [matches, setMatches] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [status, setStatus] = useState(initialStatus);
   const [page, setPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
@@ -43,6 +44,12 @@ const MatchesPage = () => {
       .then(r => { setMatches(r.data.matches || []); setTotalPages(r.data.pages || 1); hasLoaded.current = true; })
       .finally(() => setLoading(false));
   }, [status, page, pageSize]);
+
+  useEffect(() => {
+    axios.get('/api/matches/announcements')
+      .then(r => setAnnouncements(r.data || []))
+      .catch(() => setAnnouncements([]));
+  }, []);
 
   useEffect(() => {
     if (hasLoaded.current && page > totalPages) setPage(totalPages);
@@ -99,6 +106,26 @@ const MatchesPage = () => {
         </select>
         <span className="matches-page-info">صفحة {page} من {totalPages}</span>
       </div>
+      {announcements.length > 0 && (
+        <div className="matches-announcements-section">
+          <div className="matches-list">
+            {announcements.map(a => (
+              <Link key={a._id} to={`/matches/${a._id}${location.search}`} className="matches-card-link">
+                <div className="card matches-card announcement-card">
+                  <div className="announcement-card-body">
+                    <h4 className="announcement-card-title">{a.title}</h4>
+                  </div>
+                  {a.announcementImage && (
+                    <div className="announcement-card-img-wrap">
+                      <img src={getFullImageUrl(a.announcementImage)} alt={a.title} className="announcement-card-img" />
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
       {loading ? (
         <div className="matches-loading">⏳ جار التحميل...</div>
       ) : matches.length === 0 ? (

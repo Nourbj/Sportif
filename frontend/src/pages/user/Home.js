@@ -58,12 +58,14 @@ const Home = () => {
   const [matches, setMatches] = useState([]);
   const [videos, setVideos] = useState([]);
   const [stars, setStars] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
     axios.get('/api/news?limit=6').then(r => setNews(r.data.news)).catch(() => { });
     axios.get('/api/matches/today').then(r => setMatches(r.data)).catch(() => { });
     axios.get('/api/videos?limit=4').then(r => setVideos(r.data.videos)).catch(() => { });
     axios.get('/api/stars?featured=true').then(r => setStars(r.data)).catch(() => { });
+    axios.get('/api/matches/announcements').then(r => setAnnouncements(r.data)).catch(() => { });
   }, []);
 
   const featured = news.filter(n => n.featured).slice(0, 3);
@@ -126,11 +128,25 @@ const Home = () => {
           <div className="home-section-header">
             <h2 className="section-title home-section-title">مباريات اليوم</h2>
             <Link to="/matches" className="home-section-link" >عرض الكل ←</Link>
-          </div> 
-          {matches.length === 0 ? (
+          </div>
+          {matches.length + announcements.length === 0 ? (
             <div className="home-matches-empty">لا توجد مباريات اليوم</div>
           ) : (
             <div className="home-matches-grid">
+              {announcements.map(a => (
+                <Link key={a._id} to={`/matches/${a._id}`} className="home-match-link">
+                  <div className="card home-match-card announcement-card">
+                    <div className="home-match-announcement-body">
+                      <h4 className="home-match-announcement-title">{a.title}</h4>
+                    </div>
+                    {a.announcementImage ? (
+                      <div className="home-match-announcement-img-wrap">
+                        <img src={getFullImageUrl(a.announcementImage)} alt={a.title} className="home-match-announcement-img" />
+                      </div>
+                    ) : null}
+                  </div>
+                </Link>
+              ))}
               {matches.map(m => (
                 <Link key={m._id} to={`/matches/${m._id}`} className="home-match-link">
                   <div className="card home-match-card">

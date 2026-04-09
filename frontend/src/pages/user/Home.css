@@ -172,10 +172,26 @@
 .home-match-link {
   text-decoration: none;
   color: inherit;
+  display: block;
+  height: 100%;
 }
 
 .home-match-card {
   padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-match-link:hover .home-match-card {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.09);
 }
 
 .home-match-top {
@@ -231,6 +247,32 @@
 .home-match-name {
   font-weight: 800;
   font-size: 1rem;
+}
+
+.home-match-announcement-img-wrap {
+  width: 100%;
+  min-height: 120px;
+  overflow: hidden;
+}
+
+.home-match-announcement-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.home-match-announcement-body {
+  padding: 12px 14px;
+  text-align: right;
+}
+
+.home-match-announcement-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #111;
 }
 
 .home-match-score {

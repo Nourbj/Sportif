@@ -7,7 +7,7 @@ const uploadMedia = require('../middleware/uploadMedia');
 router.get('/', async (req, res) => {
   try {
     const { date, status, page, limit } = req.query;
-    const query = {};
+    const query = { type: 'match' };
     if (status) query.status = status;
     if (date) {
       const d = new Date(date);
@@ -36,8 +36,15 @@ router.get('/today', async (req, res) => {
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const matches = await Match.find({ date: { $gte: today, $lt: tomorrow } }).sort('date');
+    const matches = await Match.find({ date: { $gte: today, $lt: tomorrow }, type: 'match' }).sort('date');
     res.json(matches);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.get('/announcements', async (req, res) => {
+  try {
+    const announcements = await Match.find({ type: 'announcement' }).sort('-createdAt').limit(10);
+    res.json(announcements);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
@@ -52,16 +59,19 @@ router.get('/:id', async (req, res) => {
 router.post('/', protect, adminOnly, uploadMedia.fields([
   { name: 'homeTeamLogo', maxCount: 1 },
   { name: 'awayTeamLogo', maxCount: 1 },
-  { name: 'video', maxCount: 1 }
+  { name: 'video', maxCount: 1 },
+  { name: 'announcementImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
     if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
     if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
     if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.announcementImage?.[0]) data.announcementImage = `/uploads/${req.files.announcementImage[0].filename}`;
     
     if (data.homeScore === '') data.homeScore = null;
     if (data.awayScore === '') data.awayScore = null;
+    if (data.date === '') data.date = null;
 
     const match = await Match.create(data);
     res.status(201).json(match);
@@ -71,13 +81,16 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 router.put('/:id', protect, adminOnly, uploadMedia.fields([
   { name: 'homeTeamLogo', maxCount: 1 },
   { name: 'awayTeamLogo', maxCount: 1 },
-  { name: 'video', maxCount: 1 }
+  { name: 'video', maxCount: 1 },
+  { name: 'announcementImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
     if (req.files['homeTeamLogo']) data.homeTeamLogo = `/uploads/${req.files['homeTeamLogo'][0].filename}`;
     if (req.files['awayTeamLogo']) data.awayTeamLogo = `/uploads/${req.files['awayTeamLogo'][0].filename}`;
     if (req.files?.video?.[0]) data.videoUrl = `/uploads/${req.files.video[0].filename}`;
+    if (req.files?.announcementImage?.[0]) data.announcementImage = `/uploads/${req.files.announcementImage[0].filename}`;
+    if (data.date === '') data.date = null;
 
     const match = await Match.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(match);
