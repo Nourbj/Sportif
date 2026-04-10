@@ -3,7 +3,7 @@ const router = express.Router();
 const Star = require('../models/Star');
 const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
-const { buildMediaUrl } = require('../utils/mediaUrl');
+const { storeUploadedFile } = require('../utils/mediaStorage');
 
 const normalizeStarPayload = (payload) => {
   const data = { ...payload };
@@ -92,9 +92,9 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = normalizeStarPayload(req.body);
-    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.image?.[0]) data.image = await storeUploadedFile(req, req.files.image[0], { folder: 'stars' });
     if (req.files?.video?.[0]) {
-      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      const uploadedVideo = await storeUploadedFile(req, req.files.video[0], { folder: 'stars' });
       data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
       data.videoUrl = uploadedVideo;
     }
@@ -109,9 +109,9 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = normalizeStarPayload(req.body);
-    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.image?.[0]) data.image = await storeUploadedFile(req, req.files.image[0], { folder: 'stars' });
     if (req.files?.video?.[0]) {
-      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      const uploadedVideo = await storeUploadedFile(req, req.files.video[0], { folder: 'stars' });
       data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
       data.videoUrl = uploadedVideo;
     }

@@ -3,7 +3,7 @@ const router = express.Router();
 const Article = require('../models/Article');
 const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
-const { buildMediaUrl } = require('../utils/mediaUrl');
+const { storeUploadedFile } = require('../utils/mediaStorage');
 
 const normalizeArticlePayload = (payload) => {
   const data = { ...payload };
@@ -96,9 +96,9 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = { ...normalizeArticlePayload(req.body), author: req.user._id };
-    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.image?.[0]) data.image = await storeUploadedFile(req, req.files.image[0], { folder: 'articles' });
     if (req.files?.video?.[0]) {
-      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      const uploadedVideo = await storeUploadedFile(req, req.files.video[0], { folder: 'articles' });
       data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
       data.videoUrl = uploadedVideo;
     }
@@ -113,9 +113,9 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
 ]), async (req, res) => {
   try {
     const data = normalizeArticlePayload(req.body);
-    if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
+    if (req.files?.image?.[0]) data.image = await storeUploadedFile(req, req.files.image[0], { folder: 'articles' });
     if (req.files?.video?.[0]) {
-      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      const uploadedVideo = await storeUploadedFile(req, req.files.video[0], { folder: 'articles' });
       data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
       data.videoUrl = uploadedVideo;
     }
