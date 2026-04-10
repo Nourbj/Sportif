@@ -59,6 +59,10 @@
   min-height: 80px;
 }
 
+.admin-stars-textarea-lg {
+  min-height: 180px;
+}
+
 .admin-stars-check {
   display: flex;
   align-items: center;
@@ -74,6 +78,88 @@
   display: flex;
   gap: 12px;
   margin-top: 20px;
+}
+
+.admin-stars-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-stars-inline-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-stars-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-stars-dynamic-card {
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fafafa;
+}
+
+.admin-stars-section-card {
+  border-top: 1px solid #e7e7e7;
+  padding-top: 18px;
+  margin-top: 18px;
+}
+
+.admin-stars-dynamic-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.admin-stars-dynamic-index {
+  color: #222;
+  font-size: 1rem;
+}
+
+.admin-stars-color-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-stars-color-input {
+  width: 52px;
+  height: 42px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.admin-stars-preview-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-stars-preview-title {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+  border-right: 4px solid currentColor;
+  padding-right: 12px;
+}
+
+.admin-stars-upload-block {
+  margin-top: 16px;
 }
 
 .admin-stars-grid {
@@ -108,6 +194,12 @@
   color: #CC0000;
   font-size: 0.85rem;
   margin-bottom: 12px;
+}
+
+.admin-stars-meta {
+  color: #666;
+  font-size: 0.84rem;
+  margin-bottom: 6px;
 }
 
 .admin-stars-actions {
@@ -221,6 +313,16 @@
 
   .admin-stars-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-stars-section-header,
+  .admin-stars-dynamic-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-stars-inline-row {
+    grid-template-columns: 1fr;
   }
 }
 

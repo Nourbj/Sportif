@@ -5,6 +5,58 @@ const { protect, adminOnly } = require('../middleware/auth');
 const uploadMedia = require('../middleware/uploadMedia');
 const { buildMediaUrl } = require('../utils/mediaUrl');
 
+const normalizeArticlePayload = (payload) => {
+  const data = { ...payload };
+
+  if (typeof data.customSections === 'string') {
+    try {
+      const parsed = JSON.parse(data.customSections);
+      data.customSections = Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      data.customSections = [];
+    }
+  }
+
+  if (!Array.isArray(data.customSections)) {
+    data.customSections = [];
+  }
+
+  data.customSections = data.customSections
+    .map((section) => ({
+      title: section?.title || '',
+      body: section?.body || '',
+      titleColor: section?.titleColor || '#CC0000',
+      titleFontSize: Number(section?.titleFontSize) || 28,
+      titleFontFamily: section?.titleFontFamily || 'Arial, sans-serif',
+    }))
+    .filter((section) => section.title || section.body);
+
+  if (typeof data.videoUrls === 'string') {
+    try {
+      const parsed = JSON.parse(data.videoUrls);
+      data.videoUrls = Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      data.videoUrls = data.videoUrls ? [data.videoUrls] : [];
+    }
+  }
+
+  if (!Array.isArray(data.videoUrls)) {
+    data.videoUrls = [];
+  }
+
+  data.videoUrls = data.videoUrls
+    .map((url) => String(url || '').trim())
+    .filter(Boolean);
+
+  if (data.videoUrl && !data.videoUrls.length) {
+    data.videoUrls = [String(data.videoUrl).trim()].filter(Boolean);
+  }
+
+  data.videoUrl = data.videoUrls[0] || '';
+
+  return data;
+};
+
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 10, type } = req.query;
@@ -43,9 +95,13 @@ router.post('/', protect, adminOnly, uploadMedia.fields([
   { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const data = { ...req.body, author: req.user._id };
+    const data = { ...normalizeArticlePayload(req.body), author: req.user._id };
     if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
-    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
+    if (req.files?.video?.[0]) {
+      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
+      data.videoUrl = uploadedVideo;
+    }
     const article = await Article.create(data);
     res.status(201).json(article);
   } catch (err) { res.status(500).json({ message: err.message }); }
@@ -56,9 +112,13 @@ router.put('/:id', protect, adminOnly, uploadMedia.fields([
   { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const data = { ...req.body };
+    const data = normalizeArticlePayload(req.body);
     if (req.files?.image?.[0]) data.image = buildMediaUrl(req, req.files.image[0].filename);
-    if (req.files?.video?.[0]) data.videoUrl = buildMediaUrl(req, req.files.video[0].filename);
+    if (req.files?.video?.[0]) {
+      const uploadedVideo = buildMediaUrl(req, req.files.video[0].filename);
+      data.videoUrls = [uploadedVideo, ...data.videoUrls.filter((url) => url !== uploadedVideo)];
+      data.videoUrl = uploadedVideo;
+    }
     const article = await Article.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(article);
   } catch (err) { res.status(500).json({ message: err.message }); }

@@ -4,17 +4,26 @@ import axios from 'axios';
 import './AdminDashboard.css';
 import ReactApexChart from 'react-apexcharts';
 
-const StatCard = ({ label, value, icon, color }) => (
-  <div className="admin-stat-card" style={{ borderRight: `4px solid ${color}` }}>
-    <div className="admin-stat-row">
-      <div>
-        <p className="admin-stat-label">{label}</p>
-        <p className="admin-stat-value">{value}</p>
+const StatCard = ({ label, value, icon, color }) => {
+  const isStarsCard = color === '#FFD700';
+
+  return (
+    <button
+      type="button"
+      className={`admin-stat-card${isStarsCard ? ' is-clickable' : ''}`}
+      style={{ borderRight: `4px solid ${color}` }}
+      onClick={() => { if (isStarsCard) window.location.assign('/admin/stars'); }}
+    >
+      <div className="admin-stat-row">
+        <div>
+          <p className="admin-stat-label">{label}</p>
+          <p className="admin-stat-value">{value}</p>
+        </div>
+        <div className="admin-stat-icon" style={{ background: color + '18' }}>{icon}</div>
       </div>
-      <div className="admin-stat-icon" style={{ background: color + '18' }}>{icon}</div>
-    </div>
-  </div>
-);
+    </button>
+  );
+};
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({});

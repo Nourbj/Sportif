@@ -111,7 +111,7 @@ const AdminVideos = () => {
                   setFile={setSelectedVideoFile}
                   value={form.url}
                   onValueChange={(val) => setForm({ ...form, url: val })}
-                  placeholder="https://www.youtube.com/embed/..."
+                  placeholder="https://www.youtube.com/watch?v=..."
                   required
                   hint="MP4, WebM, Ogg"
                 />

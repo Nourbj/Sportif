@@ -14,9 +14,20 @@ const starSchema = new mongoose.Schema({
   image: { type: String, default: '' },
   bio: { type: String },
   bioAr: { type: String },
+  customSections: {
+    type: [{
+      title: { type: String, default: '' },
+      body: { type: String, default: '' },
+      titleColor: { type: String, default: '#CC0000' },
+      titleFontSize: { type: Number, default: 28 },
+      titleFontFamily: { type: String, default: 'Cairo, sans-serif' },
+    }],
+    default: [],
+  },
   stats: { type: Object, default: {} },
   featured: { type: Boolean, default: false },
   videoUrl: { type: String, default: '' },
+  videoUrls: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now }
 });
 

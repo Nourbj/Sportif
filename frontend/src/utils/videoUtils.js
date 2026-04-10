@@ -2,37 +2,52 @@ import { getFullImageUrl } from './imageUtils';
 
 export const getFullVideoUrl = (videoPath) => getFullImageUrl(videoPath);
 
-export const getYouTubeEmbedUrl = (url = '') => {
+export const getYouTubeVideoId = (url = '') => {
   try {
     const parsed = new URL(url);
     const host = parsed.hostname.replace('www.', '');
 
     if (host === 'youtu.be') {
-      const id = parsed.pathname.replace('/', '').trim();
-      return id ? `https://www.youtube.com/embed/${id}` : '';
+      return parsed.pathname.replace('/', '').trim();
     }
 
-    if (host === 'youtube.com' || host === 'm.youtube.com') {
+    if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com') {
       if (parsed.pathname === '/watch') {
-        const id = parsed.searchParams.get('v');
-        return id ? `https://www.youtube.com/embed/${id}` : '';
+        return parsed.searchParams.get('v') || '';
       }
       if (parsed.pathname.startsWith('/embed/')) {
-        const id = parsed.pathname.split('/embed/')[1];
-        return id ? `https://www.youtube.com/embed/${id}` : '';
+        return parsed.pathname.split('/embed/')[1].split('/')[0].trim();
       }
       if (parsed.pathname.startsWith('/shorts/')) {
-        const id = parsed.pathname.split('/shorts/')[1];
-        return id ? `https://www.youtube.com/embed/${id}` : '';
+        return parsed.pathname.split('/shorts/')[1].split('/')[0].trim();
+      }
+      if (parsed.pathname.startsWith('/live/')) {
+        return parsed.pathname.split('/live/')[1].split('/')[0].trim();
       }
     }
   } catch (err) {
     return '';
   }
+
   return '';
 };
 
+export const getYouTubeEmbedUrl = (url = '') => {
+  const id = getYouTubeVideoId(url);
+  return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1` : '';
+};
+
 export const getEmbedUrl = (url = '') => getYouTubeEmbedUrl(url);
+
+export const getYouTubeWatchUrl = (url = '') => {
+  const id = getYouTubeVideoId(url);
+  return id ? `https://www.youtube.com/watch?v=${id}` : '';
+};
+
+export const getYouTubeThumbnailUrl = (url = '') => {
+  const id = getYouTubeVideoId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
+};
 
 export const isDirectVideo = (url = '') => {
   if (!url) return false;
