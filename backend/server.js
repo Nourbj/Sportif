@@ -78,7 +78,7 @@ const PORT = process.env.PORT || 5000;
 // Export app for serverless platforms (e.g., Vercel)
 module.exports = app;
 
-// Only listen when running locally or in a traditional server environment
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// Only start a listener when this file is executed directly.
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
